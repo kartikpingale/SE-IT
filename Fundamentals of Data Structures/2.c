@@ -6,7 +6,6 @@ void putMatrix(int a[5][5], int x, int y);
 void addMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5]);
 void subtractMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5]);
 void multiplyMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5]);
-void divideMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5]);
 void transposeMatrix(int a[5][5], int x, int y, int c[5][5]);
 
 int main()
@@ -28,13 +27,13 @@ int main()
     while(again == 'y' || again == 'Y')
     {
         restart:
-        printf("Enter the operation you want to perform:\n1. Add\n2. Subtract\n3. Multiply\n4. Divide\n5. Transpose\n");
+        printf("Enter the operation you want to perform:\n1. Add\n2. Subtract\n3. Multiply\n4. Transpose\n5. Saddle Point\n");
         int choice;
         scanf("%d", &choice);
-        //if(choice < 1 || choice >5)
-        //{
-        //    goto restart;
-        //}
+        if(choice < 1 || choice > 5)
+        {
+            goto restart;
+        }
         
         //performs desired operation
         switch (choice)
@@ -44,32 +43,30 @@ int main()
                     addMatrix(a, b, x, y, c);
                     printf("\nThe addition of the two matrices is: ");
                     putMatrix(c, x, y);
+                    break;
                 }
             case 2:
                 {
                     subtractMatrix(a, b, x, y, c);
                     printf("\nThe subtraction of the two matrices is: ");
                     putMatrix(c, x, y);
+                    break;
                 }
             case 3:
                 {
                     multiplyMatrix(a, b, x, y, c);
                     printf("\nThe multiplication of the two matrices is: ");
                     putMatrix(c, x, y);
+                    break;
                 }
             case 4:
-                {
-                    divideMatrix(a, b, x, y, c);
-                    printf("\nThe division of the two matrices is: ");
-                    putMatrix(c, x, y);
-                }
-            case 5:
                 {
                     transposeMatrix(a, x, y, c);
                     printf("\nThe transpose of the matrix is: ");
                     putMatrix(c, x, y);
+                    break;
                 }
-        //    case 6:
+        //    case 5:
         //        {
         //            saddle point
         //        }
@@ -126,15 +123,17 @@ void addMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5]) //adds matri
 
 void subtractMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5])
 {
-    
+    int i, j;
+    for(i=0; i<x; i++)
+    {
+        for(j=0; j<y; j++)
+        {
+            c[i][j] = a[i][j] - b[i][j];
+        }
+    }
 }
 
 void multiplyMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5])
-{
-    
-}
-
-void divideMatrix(int a[5][5], int b[5][5], int x, int y, int c[5][5])
 {
     
 }
