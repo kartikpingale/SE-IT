@@ -81,6 +81,22 @@ void readArray(int array[], int size)
 	for(i=0; i<size; i++)
 	{
 		scanf("%d", &array[i]);
+		j=0;
+		for(j=0; j<i; j++)
+		{
+			if(i==0)
+			{
+				break;
+			}
+			else
+			{
+				if(array[i] == array[j])
+				{
+					printf("Repeated number! Enter another one\n");
+					i--;
+				}
+			}
+		}
 	}
 }
 
