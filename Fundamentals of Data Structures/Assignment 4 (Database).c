@@ -27,7 +27,7 @@ struct student
 int main()
 {
     struct student s[10];
-    int choice, size, sr;
+    int choice, size, serial;
     char repeat='y';
     
     while(repeat=='y' || repeat=='Y')
@@ -45,13 +45,15 @@ int main()
 			case 2:
 				{
                     printf("Enter serial no. of student: ");
-                    scanf("%d", &sr);
-					display(s, sr);
+                    scanf("%d", &serial);
+					display(s, serial);
 					break;
 				}
 			case 3:
 				{
-					
+					printf("Enter serial no. of student: ");
+                    scanf("%d", &serial);
+                    add(s, serial);
 					break;
 				}
 			case 4:
@@ -61,7 +63,9 @@ int main()
 				}
             case 5:
 				{
-					
+					printf("Enter serial no. of student: ");
+                    scanf("%d", &serial);
+                    modify(s, serial);
 					break;
 				}
 			case 6:
@@ -75,7 +79,7 @@ int main()
 					break;
 				}
 		}
-		printf("Do you want to perform any operation again? (y/n)\n");
+		printf("\nDo you want to perform any operation again? (y/n)\n");
 		scanf(" %c", &repeat);
 	}
     return 0;
@@ -85,7 +89,7 @@ int create()
 {
     int size;
     
-    printf("Enter the no. of students: ");
+    printf("\nEnter the no. of students: ");
     scanf("%d", &size);
     
     printf("Database created!\n");
@@ -93,12 +97,30 @@ int create()
     return size;
 }
 
-void display(struct student xyz[], int serial)
+void display(struct student xyz[], int sr)
 {
-    printf("Name: %s\nRoll number: %d\n", xyz[serial].name, xyz[serial].roll);
+    printf("\nName: %s\nRoll number: %d\n", xyz[sr].name, xyz[sr].roll);
 }
 
-void add()
+void add(struct student xyz[], int sr)
 {
-    
+    printf("\nEnter name: ");
+    scanf("%s", xyz[sr].name);
+    printf("Enter roll number: ");
+    scanf("%d", &xyz[sr].roll);
+}
+
+void modify(struct student xyz[], int sr)
+{
+    printf("\nEnter new name: ");
+    scanf("%s", xyz[sr].name);
+    printf("Enter new roll number: ");
+    scanf("%d", &xyz[sr].roll);
+}
+
+void delete(struct student xyz[], int sr)
+{
+    xyz[sr].name="\0";
+    xyz[sr].roll=0;
+    printf("\nRecord deleted!\n");
 }
