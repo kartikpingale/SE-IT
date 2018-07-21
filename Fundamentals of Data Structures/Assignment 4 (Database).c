@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<string.h>
 
 /*
 PROBLEM STATEMENT -
@@ -27,7 +28,7 @@ struct student
 int main()
 {
     struct student s[10];
-    int choice, size, serial;
+    int choice, size, serial, searchField;
     char repeat='y';
     
     while(repeat=='y' || repeat=='Y')
@@ -44,33 +45,37 @@ int main()
 				}
 			case 2:
 				{
-                    printf("Enter serial no. of student: ");
+                    printf("Enter serial no. to display database: ");
                     scanf("%d", &serial);
 					display(s, serial);
 					break;
 				}
 			case 3:
 				{
-					printf("Enter serial no. of student: ");
+					printf("Enter serial no. to add record: ");
                     scanf("%d", &serial);
                     add(s, serial);
 					break;
 				}
 			case 4:
 				{
-					
+					printf("Enter roll no. to search records: ");
+                    scanf("%d", &searchField);
+                    search(s, size, searchField);
 					break;
 				}
             case 5:
 				{
-					printf("Enter serial no. of student: ");
+					printf("Enter serial no. to modify record: ");
                     scanf("%d", &serial);
                     modify(s, serial);
 					break;
 				}
 			case 6:
 				{
-					
+					printf("Enter serial no. to delete record: ");
+                    scanf("%d", &serial);
+                    delete(s, serial);
 					break;
 				}
 			default:
@@ -120,7 +125,19 @@ void modify(struct student xyz[], int sr)
 
 void delete(struct student xyz[], int sr)
 {
-    xyz[sr].name="\0";
+    strcpy(xyz[sr].name, "");
     xyz[sr].roll=0;
     printf("\nRecord deleted!\n");
+}
+
+void search(struct student xyz[], int limit, int roll)
+{
+    int i;
+    for(i=0; i<limit; i++)
+    {
+        if(roll==xyz[i].roll)
+        {
+            printf("\nStudent found at serial no. %d\nName: %s\n", (i+1), xyz[i].name);
+        }
+    }
 }
