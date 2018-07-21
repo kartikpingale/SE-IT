@@ -11,7 +11,7 @@ v. Modify record
 vi. Delete record
 */
 
-void create();
+int create();
 void display();
 void add();
 void search();
@@ -26,12 +26,9 @@ struct student
 
 int main()
 {
-    student s[10];
-    int size, choice;
+    struct student s[10];
+    int choice, size, sr;
     char repeat='y';
-    
-    printf("Enter the no. of students: ");
-    scanf("%d", &size);
     
     while(repeat=='y' || repeat=='Y')
 	{
@@ -42,12 +39,14 @@ int main()
 		{
 			case 1:
 				{
-					
+					size = create();
 					break;
 				}
 			case 2:
 				{
-					
+                    printf("Enter serial no. of student: ");
+                    scanf("%d", &sr);
+					display(s, sr);
 					break;
 				}
 			case 3:
@@ -80,4 +79,26 @@ int main()
 		scanf(" %c", &repeat);
 	}
     return 0;
+}
+
+int create()
+{
+    int size;
+    
+    printf("Enter the no. of students: ");
+    scanf("%d", &size);
+    
+    printf("Database created!\n");
+    
+    return size;
+}
+
+void display(struct student xyz[], int serial)
+{
+    printf("Name: %s\nRoll number: %d\n", xyz[serial].name, xyz[serial].roll);
+}
+
+void add()
+{
+    
 }
