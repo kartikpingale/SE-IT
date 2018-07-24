@@ -1,3 +1,8 @@
+/*
+Implement following operations on string with / without pointers (without using library functions)
+i. Length ii. Palindrome iii. String comparison iv. Copy v. Reverse vi. Substring
+*/
+
 #include<stdio.h>
 
 int stringLength(char string[]);
