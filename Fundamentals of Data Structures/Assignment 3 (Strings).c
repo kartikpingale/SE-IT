@@ -1,16 +1,13 @@
-/*
-Implement following operations on string with / without pointers (without using library functions)
-i. Length ii. Palindrome iii. String comparison iv. Copy v. Reverse vi. Substring
-*/
-
 #include<stdio.h>
 
 int stringLength(char string[]);
 void stringReverse(char string[], char reverse[]);
+void stringCopy(char string1[], char string2[]);
+void stringPalindrome(char string[]);
 
 int main()
 {
-	char stringA[10], stringB[10];
+	char stringA[100], stringB[100];
 	int choice, length;
 	char repeat='y';
 	
@@ -33,7 +30,7 @@ int main()
 				}
 			case 2:
 				{
-					
+					stringPalindrome(stringA);
 					break;
 				}
 			case 3:
@@ -43,7 +40,7 @@ int main()
 				}
 			case 4:
 				{
-					
+					stringCopy(stringA, stringB);
 					break;
 				}
 			case 5:
@@ -88,4 +85,43 @@ void stringReverse(char string[], char reverse[])
 		reverse[i]=string[j];
 	}
 	printf("The reversed string is %s", reverse);
+}
+
+void stringCopy(char string1[], char string2[])
+{
+    int i=0;
+    while(string1[i]!='\0')
+    {
+        string2[i]=string1[i];
+        i++;
+    }
+    printf("Entered string is copied into another string!\nThe copied string is %s", string2);
+}
+
+void stringPalindrome(char string[])
+{
+    int length, i, j;
+    length=stringLength(string);
+    if(length%2==0)
+    {
+        i=(length/2)-1;
+        j=i+1;
+        while(j<length)
+        {
+            if(string[i]==string[j])
+            {
+                i--;
+                j++;
+            }
+            else
+            {
+                printf("String is not a palindrome!");
+            }
+        }
+        printf("String is a palindrome!");
+    }
+    else
+    {
+        printf("length is odd");
+    }
 }
