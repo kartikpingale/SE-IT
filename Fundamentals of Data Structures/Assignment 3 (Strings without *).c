@@ -54,11 +54,11 @@ int main()
 					}
 					else if(check<0)
 					{
-						printf("String 2 is greater than string 1!");
+						printf("String 1 is greater than string 2!");
 					}
 					else
 					{
-						printf("String 1 is greater than string 2!");
+						printf("String 2 is greater than string 1!");
 					}
 					break;
 				}
