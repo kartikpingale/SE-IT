@@ -1,10 +1,10 @@
 #include<stdio.h>
 
 int stringLength(char string[]);
-void stringReverse(char string[], char reverse[]);
-void stringCopy(char string1[], char string2[]);
 int stringPalindrome(char string[]);
 int stringCompare(char string1[], char string2[]);
+void stringCopy(char string1[], char string2[]);
+void stringReverse(char string[], char reverse[]);
 int substring(char string1[], char string2[]);
 
 int main()
@@ -76,9 +76,6 @@ int main()
 				{
 					printf("Enter another string: ");
 					scanf("%s", stringB);
-					check=substring(stringA, stringB);
-					printf("%s occurs %d times", stringB, check);
-					/*
 					if(stringLength(stringB)<stringLength(stringA))
 					{
 						check=substring(stringA, stringB);
@@ -95,7 +92,6 @@ int main()
 					{
 						printf("Invalid string!");
 					}
-					*/
 					break;
 				}
 			default:
@@ -192,15 +188,36 @@ int stringCompare(char string1[], char string2[])
 
 int substring(char string1[], char string2[])
 {
-	int i=0, j=0, count=0, occurrence=0;
-	while(string1[i]!='\0')
-	{
-		if(string1[i]==string2[j])
-		{
-			occurrence++;
-		}
-		i++;
-	}
+	int i, j, flag, occurrence=0;
+    for(i=0; i<=stringLength(string1) - stringLength(string2); i++)
+    {
+        for(j=i; j<(i+stringLength(string2)); j++)
+        {
+            flag=1;
+            if(string1[j]!=string2[j-i])
+            {
+                flag=0;
+                break;
+            }
+        }
+        if(flag==1)
+        {
+            occurrence++;
+        }
+    }
+    /*for(i=0; i<(stringLength(string1)-1); i++)
+    {
+        k=i;
+        for(j=0; j<(stringLength(string2)-1); j++)
+        {
+            if(string1[k+j]!=string2[j])
+            {
+                break;
+            }
+            
+        }
+        occurrence++;
+    }*/
 	/*
 	while(string1[i]!='\0')
 	{
