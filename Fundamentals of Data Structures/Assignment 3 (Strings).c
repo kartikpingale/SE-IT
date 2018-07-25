@@ -3,12 +3,14 @@
 int stringLength(char string[]);
 void stringReverse(char string[], char reverse[]);
 void stringCopy(char string1[], char string2[]);
-void stringPalindrome(char string[]);
+int stringPalindrome(char string[]);
+int stringCompare(char string1[], char string2[]);
+int substring(char string1[], char string2[]);
 
 int main()
 {
 	char stringA[100], stringB[100];
-	int choice, length;
+	int choice, length, check;
 	char repeat='y';
 	
 	printf("Enter a string: ");
@@ -16,7 +18,7 @@ int main()
 	
 	while(repeat=='y' || repeat=='Y')
 	{
-		printf("\n1. Length\n2. Palindrome\n3. String Comparison\n4. Copy\n5. Reverse\n6. Substring");
+		printf("\n1. Length\n2. Palindrome\n3. Comparison\n4. Copy\n5. Reverse\n6. Substring");
 		printf("\nSelect the operation: ");
 		scanf("%d", &choice);
 		
@@ -30,12 +32,34 @@ int main()
 				}
 			case 2:
 				{
-					stringPalindrome(stringA);
+					check=stringPalindrome(stringA);
+					if(check==0)
+					{
+						printf("String is not a palindrome!");
+					}
+					else
+					{
+						printf("String is a palindrome!");
+					}
 					break;
 				}
 			case 3:
 				{
-					
+					printf("Enter another string to compare: ");
+					scanf("%s", stringB);
+					check=stringCompare(stringA, stringB);
+					if(check==0)
+					{
+						printf("Strings are same!");
+					}
+					else if(check<0)
+					{
+						printf("String 2 is greater than string 1!");
+					}
+					else
+					{
+						printf("String 1 is greater than string 2!");
+					}
 					break;
 				}
 			case 4:
@@ -50,7 +74,28 @@ int main()
 				}
 			case 6:
 				{
-					
+					printf("Enter another string: ");
+					scanf("%s", stringB);
+					check=substring(stringA, stringB);
+					printf("%s occurs %d times", stringB, check);
+					/*
+					if(stringLength(stringB)<stringLength(stringA))
+					{
+						check=substring(stringA, stringB);
+						if(check==0)
+						{
+							printf("Entered string does not occur in %s", stringA);
+						}
+						else
+						{
+							printf("Entered string occurs %d times in %s", check, stringA);
+						}
+					}
+					else
+					{
+						printf("Invalid string!");
+					}
+					*/
 					break;
 				}
 			default:
@@ -98,7 +143,7 @@ void stringCopy(char string1[], char string2[])
     printf("Entered string is copied into another string!\nThe copied string is %s", string2);
 }
 
-void stringPalindrome(char string[])
+int stringPalindrome(char string[])
 {
     int length, i, j;
     length=stringLength(string);
@@ -106,22 +151,75 @@ void stringPalindrome(char string[])
     {
         i=(length/2)-1;
         j=i+1;
-        while(j<length)
-        {
-            if(string[i]==string[j])
-            {
-                i--;
-                j++;
-            }
-            else
-            {
-                printf("String is not a palindrome!");
-            }
-        }
-        printf("String is a palindrome!");
     }
     else
     {
-        printf("length is odd");
+        i=((length-1)/2)-1;
+        j=i+2;
     }
+    while(j<length)
+    {
+    	if(string[i]==string[j])
+        {
+            i--;
+            j++;
+        }
+        else
+        {
+            return 0;
+            break;
+        }
+    }
+    return 1; 
+}
+
+int stringCompare(char string1[], char string2[])
+{
+	int i=0;
+	while(string1[i]!='\0' || string2[i]!='\0')
+	{
+		if(string1[i]-string2[i]==0)
+		{
+			i++;
+		}
+		else
+		{
+			return string1[i]-string2[i];
+		}
+	}
+	return 0;
+}
+
+int substring(char string1[], char string2[])
+{
+	int i=0, j=0, count=0, occurrence=0;
+	while(string1[i]!='\0')
+	{
+		if(string1[i]==string2[j])
+		{
+			occurrence++;
+		}
+		i++;
+	}
+	/*
+	while(string1[i]!='\0')
+	{
+		while(string2[j]!='\0')
+		{
+			if(string2[j]==string1[i])
+			{
+				i++;
+				j++;
+			}
+			else
+			{
+				i=i-count+1;
+				j=0;
+			}
+			count++;
+		}
+		occurrence++;
+	}
+	*/
+	return occurrence;
 }
