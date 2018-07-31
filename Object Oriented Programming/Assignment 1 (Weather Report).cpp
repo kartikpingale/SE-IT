@@ -102,7 +102,7 @@ class weatherReport
 			}
             while(date<1 || date>maxDays);
         }
-        cout << "Data has been modified!"
+        cout << "Data has been modified!";
 	}
     void generateReport(weatherReport day[][32], int month)
     {
@@ -125,6 +125,7 @@ class weatherReport
         avg_amountRain=(sumRain/days);
         avg_amountSnow=(sumSnow/days);
 		cout << "\nDay\tHigh Temperature\tLow Temperature\t\tAmount of rain\t\tAmount of snow\n";
+		cout << "----------------------------------------------------------------------------------------------------\n";
 		for(i=1; i<=maxDays; i++)
         {
             cout << (i) << "\t\t" << day[month][i].highTemp << "\t\t\t" << day[month][i].lowTemp << "\t\t\t" << day[month][i].amountRain << "\t\t\t" << day[month][i].amountSnow << endl;
