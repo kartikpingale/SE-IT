@@ -2,9 +2,10 @@
 
 void readMatrix(int a[][10], int rowSize, int colSize);
 void writeMatrix(int a[][10], int rowSize, int colSize);
-void addMatrix(int a[][10], int rowA, int colA, int b[][10], int rowB, int colB, int c[][10]);
+void addMatrix(int a[][10], int rowA, int colA, int b[][10], int c[][10]);
 void multiplyMatrix(int a[][10], int rowA, int colA, int b[][10], int rowB, int colB, int c[][10]);
 void transposeMatrix(int a[][10], int rowA, int colA, int c[][10]);
+void saddlepointMatrix(int a[][10], int rowA, int colA);
 
 int main()
 {
@@ -37,7 +38,7 @@ int main()
 				{
 					if(rowA==rowB && colA==colB)
 					{
-						addMatrix(matrixA, rowA, colA, matrixB, rowB, colB, matrixC);
+						addMatrix(matrixA, rowA, colA, matrixB, matrixC);
 						writeMatrix(matrixC, rowA, colA);
 					}
 					else
@@ -71,7 +72,10 @@ int main()
 				}
 			case 4:
 				{
-					
+                    printf("Matrix A:\n");
+					saddlepointMatrix(matrixA, rowA, colA);
+                    printf("\nMatrix B:\n");
+                    saddlepointMatrix(matrixB, rowB, colB);
 					break;
 				}
 			default:
@@ -115,7 +119,7 @@ void writeMatrix(int a[][10], int rowSize, int colSize)
 	}
 }
 
-void addMatrix(int a[][10], int rowA, int colA, int b[][10], int rowB, int colB, int c[][10])
+void addMatrix(int a[][10], int rowA, int colA, int b[][10], int c[][10])
 {
 	int i, j;
 	for(i=0; i<rowA; i++)
@@ -146,12 +150,65 @@ void multiplyMatrix(int a[][10], int rowA, int colA, int b[][10], int rowB, int 
 
 void saddlepointMatrix(int a[][10], int rowA, int colA)
 {
-	int i, j, smallest, largest;
-	int saddle[10][10];
-	for()
-	{
-		
-	}
+	int small[10][10], large[10][10];
+    int i, j, rowIndex, colIndex, largest, smallest, flag=0;
+    for(i=0; i<10; i++)
+    {
+        for(j=0; j<10; j++)
+        {
+            small[i][j]=0;
+            large[i][j]=0;
+        }
+    }
+    for(i=0; i<rowA; i++)
+    {
+        smallest=a[i][0];
+        for(j=0; j<colA; j++)
+        {
+            if(a[i][j]<smallest)
+            {
+                smallest=a[i][j];
+                colIndex=j;
+            }
+            else if(a[i][j]==smallest)
+            {
+                rowIndex=i;
+                colIndex=j;
+                small[rowIndex][colIndex]=smallest;
+            }
+        }
+        rowIndex=i;
+        small[rowIndex][colIndex]=smallest;
+    }
+    for(j=0; j<colA; j++)
+    {
+        largest=a[0][j];
+        for(i=0; i<rowA; i++)
+        {
+            if(a[i][j]>largest)
+            {
+                largest=a[i][j];
+                rowIndex=i;
+            }
+        }
+        colIndex=j;
+        large[rowIndex][colIndex]=largest;
+    }
+    for(i=0; i<rowA; i++)
+    {
+        for(j=0; j<colA; j++)
+        {
+            if((small[i][j]==large[i][j]) && (small[i][j]!=0))
+            {
+                printf("Saddle point is %d in row %d and column %d\n", small[i][j], (i+1), (j+1));
+                flag=1;
+            }
+        }
+    }
+    if(flag==0)
+    {
+        printf("There is no saddle point in the matrix\n");
+    }
 }
 
 void transposeMatrix(int a[][10], int rowA, int colA, int c[][10])
