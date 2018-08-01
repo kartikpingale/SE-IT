@@ -10,21 +10,37 @@ void saddlepointMatrix(int a[][10], int rowA, int colA);
 int main()
 {
 	int matrixA[10][10], matrixB[10][10], matrixC[10][10];
-	int rowA, colA, rowB, colB, choice;
+	int rowA=1, colA=1, rowB=1, colB=1, choice;
 	char repeat='y';
 	
-	printf("Enter no. of rows for matrix A: ");
-	scanf("%d", &rowA);
-	printf("Enter no. of columns for matrix A: ");
-	scanf("%d", &colA);
+    do
+    {
+        if(rowA<=0 || colA<=0)
+        {
+            printf("Invalid input! Enter the data again\n\n");
+        }
+        printf("Enter no. of rows for matrix A: ");
+        scanf("%d", &rowA);
+        printf("Enter no. of columns for matrix A: ");
+        scanf("%d", &colA);
+    }
+	while(rowA<=0 || colA<=0);
 	
 	readMatrix(matrixA, rowA, colA);
 	
-	printf("Enter no. of rows for matrix B: ");
-	scanf("%d", &rowB);
-	printf("Enter no. of columns for matrix B: ");
-	scanf("%d", &colB);
-	
+    do
+    {
+        if(rowB<=0 || colB<=0)
+        {
+            printf("Invalid input! Enter the data again\n\n");
+        }
+        printf("Enter no. of rows for matrix B: ");
+        scanf("%d", &rowB);
+        printf("Enter no. of columns for matrix B: ");
+        scanf("%d", &colB);
+    }
+    while(rowB<=0 || colB<=0);
+    
 	readMatrix(matrixB, rowB, colB);
 	
 	while(repeat=='y' || repeat=='Y')
