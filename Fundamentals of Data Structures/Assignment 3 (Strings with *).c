@@ -1,24 +1,25 @@
 #include<stdio.h>
+#include<stdlib.h>
 
+char * readString();
 int stringLength(char *string);
-void stringReverse(char *string, char *reverse);
 void stringCopy(char *string1, char *string2);
+void stringReverse(char *string);
 int stringPalindrome(char *string);
-int stringCompare(char *string1, char *string2);
-int substring(char *string1, char *string2);
+void stringConcatenate(char *string1, char *string2);
 
 int main()
 {
-	char stringA[100], stringB[100];
+	char *stringA, *stringB, *stringC;
 	int choice, length, check;
 	char repeat='y';
 	
-	printf("Enter a string: ");
-	scanf("%[^\n]", stringA);
+	stringA=readString();
+	stringB=readString();
 	
 	while(repeat=='y' || repeat=='Y')
 	{
-		printf("\n1. Length\n2. Palindrome\n3. Comparison\n4. Copy\n5. Reverse\n6. Substring");
+		printf("\n1. Length\n2. Palindrome\n3. Comparison\n4. Copy\n5. Reverse\n6. Substring\n7. Concatenate");
 		printf("\nSelect the operation: ");
 		scanf("%d", &choice);
 		
@@ -45,7 +46,7 @@ int main()
 				}
 			case 3:
 				{
-					printf("\nEnter another string to compare: ");
+					/*printf("\nEnter another string to compare: ");
 					scanf("%s", stringB);
 					check=stringCompare(stringA, stringB);
 					if(check==0)
@@ -59,22 +60,23 @@ int main()
 					else
 					{
 						printf("String 1 is greater than string 2!");
-					}
+					}*/
 					break;
 				}
 			case 4:
 				{
-					stringCopy(stringA, stringB);
+					stringCopy(stringB, stringA);
+					printf("%s is copied in another string!", stringB);
 					break;
 				}
 			case 5:
 				{
-					stringReverse(stringA, stringB);
+					stringReverse(stringA);
 					break;
 				}
 			case 6:
 				{
-					printf("\nEnter another string to search: ");
+					/*printf("\nEnter another string to search: ");
 					scanf("%s", stringB);
 					if(stringLength(stringB)<stringLength(stringA))
 					{
@@ -91,7 +93,15 @@ int main()
 					else
 					{
 						printf("Invalid string!");
-					}
+					}*/
+					break;
+				}
+			case 7:
+				{
+					//stringB=readString();
+					stringC=(char *) malloc(sizeof(char)*(stringLength(stringA)+stringLength(stringB))+1);
+					stringCopy(stringC, stringA);
+					stringConcatenate(stringC, stringB);
 					break;
 				}
 			default:
@@ -104,7 +114,19 @@ int main()
 		printf("\nDo you want to perform another operation? (y/n)");
 		scanf(" %c", &repeat);
 	}
+	
 	return 0;
+}
+
+char * readString()
+{
+	int length=0;
+	char temp[50], *string;
+	printf("Enter a string: ");
+	scanf(" %[^\n]", temp);
+	string=(char *) malloc((sizeof(char)*stringLength(temp)+1));
+	stringCopy(string, temp);
+	return string;
 }
 
 int stringLength(char *string)
@@ -117,25 +139,26 @@ int stringLength(char *string)
 	return length;
 }
 
-void stringReverse(char *string, char *reverse)
+void stringCopy(char *string1, char *string2)
+{
+    int i=0;
+    while(string2[i]!='\0')
+    {
+        string1[i]=string2[i];
+        i++;
+    }
+    string1[i]='\0';
+}
+
+void stringReverse(char *string)
 {
 	int i, j;
+	char reverse[50];
 	for(i=0, j=(stringLength(string) -1); i<stringLength(string), j>=0; i++, j--)
 	{
 		reverse[i]=string[j];
 	}
 	printf("The reversed string is %s", reverse);
-}
-
-void stringCopy(char *string1, char *string2)
-{
-    int i=0;
-    while(string1[i]!='\0')
-    {
-        string2[i]=string1[i];
-        i++;
-    }
-    printf("Entered string is copied into another string!\nThe copied string is %s", string2);
 }
 
 int stringPalindrome(char *string)
@@ -168,41 +191,18 @@ int stringPalindrome(char *string)
     return 1; 
 }
 
-int stringCompare(char *string1, char *string2)
+void stringConcatenate(char *string1, char *string2)
 {
-	int i=0;
-	while(string1[i]!='\0' || string2[i]!='\0')
+	int i, j, length1, length2;
+	length1=stringLength(string1);
+	length2=stringLength(string2);
+	i=length1+1;
+	while(string2[j]!='\0')
 	{
-		if(string1[i]-string2[i]==0)
-		{
-			i++;
-		}
-		else
-		{
-			return string1[i]-string2[i];
-		}
+		string1[i]=string2[j];
+		i++;
+		j++;
 	}
-	return 0;
-}
-
-int substring(char *string1, char *string2)
-{
-	int i, j, flag, occurrence=0;
-	for(i=0; i<(stringLength(string1)-stringLength(string2)); i++)
-	{
-		for(j=i; j<(i+stringLength(string2)); j++)
-		{
-			flag=1;
-			if(string1[j]!=string2[j-i])
-			{
-				flag=0;
-				break;
-			}
-		}
-		if(flag==1)
-		{
-			occurrence++;
-		}
-	}
-	return occurrence;
+	//for(i=length1+1, j=0; string2[j]!='\0'; i++, j++)
+	string1[i]='\0';
 }
