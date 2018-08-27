@@ -4,7 +4,8 @@ using namespace std;
 
 class complex
 {
-	int real, imaginary;
+	float real;
+	float imaginary;
 	
 	public:
 	complex()
@@ -12,42 +13,55 @@ class complex
 		real=0;
 		imaginary=0;
 	}
-	complex(int a, int b)
+	complex(float a, float b)
 	{
 		real=a;
 		imaginary=b;
 	}
-	void getData();
+    
 	void putData(complex &number);
-	friend complex add(complex &a, complex &b);
-	friend complex subtract(complex &a, complex &b);
-	complex multiply(complex &a, complex &b)
+	
+	complex friend operator + (complex a, complex b);
+	complex friend operator - (complex a, complex b);
+	
+	complex operator * (complex &number)
 	{
 		complex product;
-		product.real = (a.real+b.real) + (-1*a.imaginary*b.imaginary);
-		product.imaginary = (a.real*b.imaginary) + (b.real*a.imaginary);
+		product.real = (real*number.real) - (imaginary*number.imaginary);
+		product.imaginary = (real*number.imaginary) + (number.real*imaginary);
 		return product;
 	}
-	complex divide(complex &a, complex &b)
+	
+	complex operator / (complex &number)
 	{
 		complex division;
-		
+        float mod=(number.real*number.real + number.imaginary*number.imaginary);
+        division.real = ((real*number.real) + (imaginary*number.imaginary))/(mod);
+        division.imaginary = ((imaginary*number.real) - (real*number.imaginary))/(mod);
 		return division;
 	}
 };
 
 int main()
 {
-	complex number1, number2, number3;
+	complex answer;
 	int choice;
+	float Re, Im;
 	char repeat='y';
 	
 	while(repeat=='y' || repeat=='Y')
 	{
-		cout << "First number\n";
-		number1.getData();
-		cout << "\nSecond number\n";
-		number2.getData();
+		cout << "First number\nEnter real part: ";
+		cin >> Re;
+		cout << "Enter imaginary part: ";
+		cin >> Im;
+		complex number1(Re, Im);
+		
+		cout << "\nSecond number\nEnter real part: ";
+		cin >> Re;
+		cout << "Enter imaginary part: ";
+		cin >> Im;
+		complex number2(Re, Im);
 		
 		cout << "\n1. Add\n2. Subtract\n3. Multiply\n4. Divide\nSelect the operation: ";
 		cin >> choice;
@@ -55,26 +69,26 @@ int main()
 		{
 			case 1:
 				{
-					number3=add(number1, number2);
-					number3.putData(number3);
+					answer = number1 + number2;
+					answer.putData(answer);
 					break;
 				}
 			case 2:
 				{
-					number3=subtract(number1, number2);
-					number3.putData(number3);
+					answer = number1 - number2;
+					answer.putData(answer);
 					break;
 				}
 			case 3:
 				{
-					number3=number3.multiply(number1, number2);
-					number3.putData(number3);
+					answer = number1 * number2;
+					answer.putData(answer);
 					break;
 				}
 			case 4:
 				{
-					number3=number3.divide(number1, number2);
-					number3.putData(number3);
+					answer = number1 / number2;
+					answer.putData(answer);
 					break;
 				}
 			default:
@@ -90,14 +104,6 @@ int main()
 	return 0;
 }
 
-void complex::getData()
-{
-	cout << "Enter real part: ";
-	cin >> real;
-	cout << "Enter imaginary part: ";
-	cin >> imaginary;
-}
-
 void complex::putData(complex &number)
 {
 	if(number.imaginary>=0)
@@ -106,18 +112,18 @@ void complex::putData(complex &number)
 		cout << "\n" << real << imaginary << "i\n";
 }
 
-complex add(complex &a, complex &b)
+complex operator + (complex a, complex b)
 {
 	complex sum;
-	sum.real = a.real+b.real;
-	sum.imaginary = a.imaginary+b.imaginary;
+	sum.real = a.real + b.real;
+	sum.imaginary = a.imaginary + b.imaginary;
 	return sum;
 }
 
-complex subtract(complex &a, complex &b)
+complex operator - (complex a, complex b)
 {
 	complex diff;
-	diff.real = a.real-b.real;
-	diff.imaginary = a.imaginary-b.imaginary;
+	diff.real = a.real - b.real;
+	diff.imaginary = a.imaginary - b.imaginary;
 	return diff;
 }
