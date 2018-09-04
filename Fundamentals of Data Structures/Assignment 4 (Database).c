@@ -1,6 +1,3 @@
-#include<stdio.h>
-#include<string.h>
-
 /*
 PROBLEM STATEMENT -
 Create a Database using array of structures and perform following operations on it:
@@ -12,132 +9,255 @@ v. Modify record
 vi. Delete record
 */
 
-int create();
-void display();
-void add();
-void search();
-void modify();
-void delete();
+#include <stdio.h>
 
-struct student
+typedef struct 
 {
-    char name[10];
-    int roll;
-};
+	int id;
+	char name[30];
+	char designation[30];
+	float salary;
+}employee;
+
+employee read();
+void display(employee emp);
+int delete(employee emp[], int pos, int size);
+int search(employee emp[], int id, int size);
+int modify(employee emp[], int id, int size);
+int add(employee emp[], int size);
+
+static int ID=1;
 
 int main()
 {
-    struct student s[10];
-    int choice, size, serial, searchField;
-    char repeat='y';
-    
-    while(repeat=='y' || repeat=='Y')
+	employee e[20];
+	int size=1, i, choice, searchField, searchFlag;
+	char repeat='y';
+	
+	while(repeat=='y' || repeat=='Y')
 	{
-		printf("Enter the operation you want to perform\n1. Create Database\n2. Display Database\n3. Add Record\n4. Search Record\n5. Modify Record\n6. Delete Record\n");
+		printf("\n1. Create database\n2. Display\n3. Add\n4. Search\n5. Modify\n6. Delete\nSelect your option: ");
 		scanf("%d", &choice);
-		
 		switch(choice)
 		{
 			case 1:
 				{
-					size = create();
+					do
+					{
+						printf("\nEnter no. of employees: ");
+						scanf("%d", &size);
+					}
+					while(size<=0);
+	
+					for(i=0; i<size; i++)
+					{
+						e[i]=read();
+					}
+					
+					printf("Database created!\n");
 					break;
 				}
 			case 2:
 				{
-                    printf("Enter serial no. to display database: ");
-                    scanf("%d", &serial);
-					display(s, serial);
+					for(i=0; i<size; i++)
+					{
+						display(e[i]);
+					}
 					break;
 				}
 			case 3:
 				{
-					printf("Enter serial no. to add record: ");
-                    scanf("%d", &serial);
-                    add(s, serial);
+					size=add(e, size);
 					break;
 				}
 			case 4:
 				{
-					printf("Enter roll no. to search records: ");
-                    scanf("%d", &searchField);
-                    search(s, size, searchField);
+					printf("\nEnter employee ID to search: ");
+					scanf("%d", &searchField);
+				
+					searchFlag=search(e, searchField, size);
+				
+					if(searchFlag==-1)
+					{
+						printf("\nCannot find employee with ID %d\n", searchField);
+					}
+					else
+					{
+						printf("\nEmployee with ID %d found!", searchField);
+						display(e[searchFlag]);
+					}
 					break;
 				}
-            case 5:
+			case 5:
 				{
-					printf("Enter serial no. to modify record: ");
-                    scanf("%d", &serial);
-                    modify(s, serial);
+					printf("\nEnter employee ID to modify: ");
+					scanf("%d", &searchField);
+
+					searchFlag=modify(e, searchField, size);
+
+					if(searchFlag==-1)
+					{
+						printf("\nCannot find employee with ID %d\n", searchField);
+					}
+					else
+					{
+						printf("\nData for employee with ID %d modified!", searchField);
+						display(e[searchFlag]);
+					}
 					break;
 				}
 			case 6:
 				{
-					printf("Enter serial no. to delete record: ");
-                    scanf("%d", &serial);
-                    delete(s, serial);
+					printf("\nEnter employee ID to delete: ");
+					scanf("%d", &searchField);
+
+					searchFlag=search(e, searchField, size);
+
+					if(searchFlag==-1)
+					{
+						printf("\nCannot find employee with ID %d\n", searchField);
+					}
+					else
+					{
+						size=delete(e, searchFlag, size);
+						printf("Employee with ID %d deleted!", searchField);
+					}
 					break;
 				}
 			default:
 				{
-					printf("Incorrect selection! Enter a number between 1-6\n");
+					printf("\nInvalid selection! Enter a number between 1-5!\n");
 					break;
 				}
 		}
-		printf("\nDo you want to perform any operation again? (y/n)\n");
+		printf("\nDo you want to perform another operation? (y/n)");
 		scanf(" %c", &repeat);
 	}
-    return 0;
+	
+	return 0;
 }
 
-int create()
+employee read()
 {
-    int size;
-    
-    printf("\nEnter the no. of students: ");
-    scanf("%d", &size);
-    
-    printf("Database created!\n");
-    
-    return size;
+	employee emp;
+	emp.id=ID;
+	ID++;
+	printf("\nEnter name: ");
+	scanf("%s", emp.name);
+	printf("Enter designation: ");
+	scanf("%s", emp.designation);
+	printf("Enter salary: ");
+	scanf("%f", &emp.salary);
+	return emp;
 }
 
-void display(struct student xyz[], int sr)
+void display(employee emp)
 {
-    printf("\nName: %s\nRoll number: %d\n", xyz[sr].name, xyz[sr].roll);
+	printf("\nEmployee ID: %d", emp.id);
+	printf("\nName: %s", emp.name);
+	printf("\nDesignation: %s", emp.designation);
+	printf("\nSalary: %0.2f\n", emp.salary);
 }
 
-void add(struct student xyz[], int sr)
+int search(employee emp[], int id, int size)
 {
-    printf("\nEnter name: ");
-    scanf("%s", xyz[sr].name);
-    printf("Enter roll number: ");
-    scanf("%d", &xyz[sr].roll);
+	int i, flag=0;
+	for(i=0; i<size; i++)
+	{
+		if(emp[i].id==id)
+		{
+			flag=1;
+			break;
+		}
+	}
+	if(flag==1)
+	{
+		return i;
+	}
+	else
+	{
+		return -1;
+	}
 }
 
-void modify(struct student xyz[], int sr)
+int delete(employee emp[], int pos, int size)
 {
-    printf("\nEnter new name: ");
-    scanf("%s", xyz[sr].name);
-    printf("Enter new roll number: ");
-    scanf("%d", &xyz[sr].roll);
+	int i;
+	if(pos==(size-1))
+	{}
+	else if(pos==0)
+	{
+		for(i=1; i<size; i++)
+		{
+			emp[i-1]=emp[i];
+		}
+	}
+	else
+	{
+		for(i=(pos+1); i<size; i++)
+		{
+			emp[i-1]=emp[i];
+		}
+	}
+	size--;
+	return size;
 }
 
-void delete(struct student xyz[], int sr)
+int modify(employee emp[], int id, int size)
 {
-    strcpy(xyz[sr].name, "");
-    xyz[sr].roll=0;
-    printf("\nRecord deleted!\n");
+	int choice, i, flag;
+	char repeat='y';
+	flag=search(emp, id, size);
+	if(flag==-1)
+	{
+		return -1;
+	}
+	else
+	{
+		while(repeat=='y' || repeat=='Y')
+		{
+			printf("\n1. Name\n2. Designation\n3. Salary\nSelect field to modify: ");
+			scanf("%d", &choice);
+			switch(choice)
+			{
+				case 1:
+				{
+					printf("Enter name: ");
+					scanf("%s", emp[flag].name);
+					break;
+				}
+				case 2:
+				{
+					printf("Enter designation: ");
+					scanf("%s", emp[flag].designation);
+					break;
+				}
+				case 3:
+				{
+					printf("Enter salary: ");
+					scanf("%f", &emp[flag].salary);
+					break;
+				}
+				default:
+				{
+					printf("\nInvalid selection! Enter a number between 1-3!\n");
+					break;
+				}
+			}
+			printf("\nDo you want to modify another field? (y/n)");
+			scanf(" %c", &repeat);
+		}
+		return flag;
+	}
 }
 
-void search(struct student xyz[], int limit, int roll)
+int add(employee emp[], int size)
 {
-    int i;
-    for(i=0; i<limit; i++)
-    {
-        if(roll==xyz[i].roll)
-        {
-            printf("\nStudent found at serial no. %d\nName: %s\n", (i+1), xyz[i].name);
-        }
-    }
+	int i;
+	for(i=size; i<=size; i++)
+	{
+		emp[i]=read();
+	}
+	size++;
+	return size;
 }
