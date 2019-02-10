@@ -171,6 +171,8 @@ int convert::evaluate(char x, int op1, int op2) /*function to get value of an ex
 		return(op1/op2);
 	else if(x=='^')
 		return(pow(op1, op2));
+	else
+		return -1;
 }
 
 int convert::infixToPostfix(char infix[], char postfix[]) /*function to convert expression from infix to postfix*/
@@ -198,7 +200,7 @@ int convert::infixToPostfix(char infix[], char postfix[]) /*function to convert 
 			}
 			else if(scan==')')
 			{
-				while(s.getTop()!='(')
+				while(s.getTop()!='(' && !s.empty())
 				{
 					c=s.pop();
 					postfix[j]=c;
@@ -259,6 +261,8 @@ int convert::precedence(char c) /*function to get priority of operators*/
 		return 2;
 	else if(c=='+' || c=='-')
 		return 1;
+	else
+		return -1;
 }
 
 int convert::infixToPrefix(char infix[], char prefix[]) /*function to convert expression from infix to prefix*/
@@ -343,23 +347,15 @@ char stack::pop() /*function to pop elements from stack*/
 int stack::empty() /*function to check if the stack is empty*/
 {
 	if(top==NULL)
-	{
 		return 1;
-	}
 	else
-	{
 		return 0;
-	}
 }
 
 char stack::getTop() /*function to get element on top of the stack*/
 {
 	if(top==NULL)
-	{
 		return -1;
-	}
 	else
-	{
 		return top->data;
-	}
 }
