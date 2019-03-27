@@ -1,0 +1,193 @@
+disp macro msg		; macro to display messages
+        lea dx, msg
+        mov ah, 09h
+        int 21h
+endm
+
+.model small
+
+.data
+
+        arr db 00h, 00h, 00h, 00h, 00h
+        res dw 0000h, 0000h, 0000h, 0000h, 0000h
+        menu db 10, 13, "*****MENU*****$"
+        ch1 db 10, 13, "1. Hex to BCD$"
+        ch2 db 10, 13, "2. BCD to Hex$"
+        ch3 db 10, 13, "3. Exit$"
+        choice db 10, 13, "Enter your choice: $"
+        getnumber db 10, 13, "Enter a number: $"
+        convert db 10, 13, "Converting...$"
+        resultBCD db 10, 13, "Equivalent BCD Number: $"
+        resultHex db 10, 13, "Equivalent Hex Number: $"
+
+.code                 
+start:                
+                     
+        mov ax, @data 
+        mov ds, ax
+
+        up:
+        disp menu       ; displays menu
+        disp ch1
+        disp ch2
+        disp ch3
+        disp choice
+
+        mov ah, 01h     ; accepts choice
+        int 21h
+
+        sub al, 30h     ; selects choice
+        cmp al, 01h 
+        jz l1
+        cmp al, 02h
+        jz l2
+        cmp al, 03h
+        jz l3
+
+        l1:          
+        call hexbcd     ; calls hex to bcd
+        jmp up
+
+        l2:             ; calls bcd to hex
+        call bcdhex
+        jmp up
+
+        l3:             ; terminates program
+        mov ah, 4ch
+        int 21h
+
+        hexbcd proc near        ; procedure to convert hex to bcd
+
+                mov bx, 0000h   ; initialize variables
+                mov cx, 04h
+
+                disp getnumber
+
+                loop1:
+                mov ah, 01h     ; accept a digit
+                int 21h
+
+                cmp al, 39h
+                jbe x1
+                cmp al, 46h
+                jbe x2
+                sub al, 57h
+                jmp x
+
+                x1:
+                sub al, 30h
+                jmp x
+
+                x2:
+                sub al, 37h
+                jmp x
+
+                x:
+                shl bx, 04h
+                add bl, al
+                dec cx
+                jnz loop1
+
+                disp convert
+
+                mov ax, bx
+                mov bx, 000ah
+                mov cx, 0000h
+
+                convertBCD:	; convert hex to bcd
+                mov dx, 0000h
+                div bx
+                push dx
+                inc cx
+                cmp ax, 0000h
+                jne convertBCD
+
+                disp resultBCD
+
+                dispBCD:	; display equivalent bcd
+                pop dx
+                add dx, 30h
+                dec cx
+                mov ah, 02h
+                int 21h
+                cmp cx, 0000h
+                jne dispBCD
+
+                ret
+        endp
+
+        bcdhex proc near        ; procedure to convert bcd to hex
+
+                mov cx, 0005h   ; initialize counter
+                mov ax, @data
+                mov ds, ax
+                lea si, arr
+
+                disp getnumber
+
+                getBCD:         ; get BCD number
+                mov ah, 01h
+                int 21h
+                sub al, 30h
+                mov [si], al
+                inc si
+                dec cx
+                jnz getBCD
+                
+                mov bx, 0001h
+                mov cx, 0005h
+                dec si
+                lea di, res
+
+                convertHex:     ; conversion
+                mov ah, 00h
+                mov al, [si]
+                mul bx
+                mov [di], ax
+                inc di
+                inc di
+                dec si
+                mov ax, 000ah
+                mul bx
+                mov bx, ax
+                dec cx
+                jnz convertHex
+
+                lea di, res
+                mov bx, 0000h
+                mov cx, 0005h
+
+                addArray:       ; add elements in array
+                add bx, [di]
+                inc di
+                inc di
+                dec cx
+                jnz addArray
+
+                mov cx, 0004h
+
+                disp convert
+                disp resultHex
+
+                displayHex:     ; display hex number
+                rol bx, 04h
+                push bx
+                and bx, 000fh
+                cmp bx, 09h
+                jbe label1
+                add bx, 37h
+                jmp label2
+                label1:
+                add bx, 30h
+                label2:
+                mov dx, bx
+                mov ah, 02h
+                int 21h
+                pop bx
+                dec cx
+                jnz displayHex
+
+                ret
+        endp
+
+end start
