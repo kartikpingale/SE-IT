@@ -1,0 +1,250 @@
+/*
+Create Binary tree and perform following operations:
+a. Insert
+b. Display
+c. Depth of a tree
+d. Display leaf-nodes
+e. Create a copy of a tree
+*/
+
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+class node
+{
+	public:
+	int data;
+	node *left, *right;
+	node();
+};
+
+class binaryTree
+{
+	public:
+	int a[50], n, leafCount;
+	node *root, *copyRoot;
+	
+	binaryTree();
+	node* insert();
+	void inorder(node *root);
+	void postorder(node *root);
+	void preorder(node *root);
+	void display(node *root);
+	void leaf(node *root);
+	int depth(node *root);
+	node* copyTree();
+	node* cpy(node *root);
+};
+
+int main()
+{
+	binaryTree tree;
+	int choice, height;
+	
+	tree.root=tree.insert();
+	
+	do
+	{
+		cout << "\n\n1. Display\n2. Depth\n3. Display leaf nodes\n4. Create a copy\n5. Exit\nEnter your choice: ";
+		cin >> choice;
+		switch(choice)
+		{
+			case 1:
+				{
+					tree.display(tree.root);
+					break;
+				}
+			case 2:
+				{
+					height=tree.depth(tree.root);
+					cout << "\nDepth of the tree is " << height << endl;
+					break;
+				}
+			case 3:
+				{
+					tree.leaf(tree.root);
+					cout << "\nNo. of leaf nodes is " << tree.leafCount << endl;
+					break;
+				}
+			case 4:
+				{
+					tree.copyTree();
+					tree.display(tree.copyRoot);
+					break;
+				}
+			case 5:	break;
+			default:
+				{
+					cout << "\nInvalid Input!";
+					break;
+				}
+		}
+	}
+	while(choice!=5);
+	
+	return 0;
+}
+
+void binaryTree::display(node *root)
+{
+	cout << "\nINORDER\n";
+	inorder(root);
+	cout << "\n\nPREORDER\n";
+	preorder(root);
+	cout << "\n\nPOSTORDER\n";
+	postorder(root);
+	cout << "\n";
+}
+
+void binaryTree::inorder(node* root)
+{
+	if(root!=NULL)
+	{
+		inorder(root->left);
+		cout << root->data << "\t";
+		inorder(root->right);
+	}
+}
+
+void binaryTree::postorder(node* root)
+{
+	if(root!=NULL)
+	{
+		postorder(root->left);
+		postorder(root->right);
+		cout << root->data << "\t";
+	}
+}
+
+void binaryTree::preorder(node* root)
+{
+	if(root!=NULL)
+	{
+		cout << root->data << "\t";
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+
+node* binaryTree::copyTree()
+{
+	copyRoot=cpy(root);
+	return copyRoot;
+}
+
+node* binaryTree::cpy(node *root)
+{	
+	node *temp;	
+	if(root!=NULL)
+	{
+		temp=new node;
+		temp->left=NULL;
+		temp->right=NULL;
+		temp=root;
+	}
+	if(root->left!=NULL)
+	{	
+		temp->left=cpy(root->left);
+	}
+	
+	if(root->right!=NULL)
+	{	
+		temp->right=cpy(root->right);
+	}
+	return temp;
+}
+
+void binaryTree::leaf(node *root)
+{
+	if(root!=NULL)
+	{
+		if(root->left==NULL && root->right==NULL)
+		{
+			leafCount++;
+			cout << "\nLeaf Node: " << root->data << endl;
+		}
+		leaf(root->left);
+		leaf(root->right);
+	}
+}
+
+int binaryTree::depth(node *root)
+{
+	int hl=0, hr=0;
+	if(root==NULL)
+	{
+		return 0;
+	}
+	if(root->left==NULL && root->right==NULL)
+	{	
+		return 1;
+	}
+	hl=depth(root->left);
+	hr=depth(root->right);
+	return (max(hl,hr)+1);
+}
+
+node* binaryTree::insert()
+{
+	int choice, i;
+	node *temp=new node;
+	cout << "\nEnter data: " << endl;
+	cin >> temp->data;
+	a[n] = temp->data;
+	for(i=0; i<n; i++)
+	{
+		if(a[i] == temp->data)
+	    {
+			cout << "\nData is already present. Enter another number!" << endl;
+			cin >> temp->data;
+	    }
+	}
+	n++;		
+	temp->left=NULL;
+	temp->right=NULL;
+	if(root==NULL)
+	{
+		root=temp;
+	}
+	cout << "\nDo you want to insert data at LEFT" << endl;
+	cout << "1.Yes" << endl;
+	cout << "2.No" << endl;
+	cin >> choice;
+	if(choice==1)
+	{
+		temp->left=insert();
+	}
+	else if(choice!=1 && choice!=2)
+	{
+		cout << "\nInvalid input!" << endl;
+	}
+	cout << "\nDo you want to insert data at RIGHT" << endl;
+	cout << "1.Yes" << endl;
+	cout << "2.No" << endl;
+	cin >> choice;
+	if(choice==1)
+	{
+		temp->right=insert();
+	}
+	if(choice!=1 && choice!=2)
+	{
+		cout << "Invalid input!" << endl;
+	}
+	return temp;
+}
+
+node::node()
+{
+	data=-1;
+	left=NULL;
+	right=NULL;
+}
+
+binaryTree::binaryTree()
+{
+	root=NULL;
+	n=0;
+	leafCount=0;
+}
