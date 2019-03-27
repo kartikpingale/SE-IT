@@ -38,12 +38,12 @@ int main()
 	convert expression;
 	int choice, result;
 	char infix[50], postfix[50], prefix[50], check;
-	
+
 	do
 	{
 		cout << "\n1. Infix to Postfix\n2. Infix to Prefix\n3. Exit\nEnter your choice: ";
 		cin >> choice;
-	
+
 		switch(choice)
 		{
 			case 1:
@@ -99,29 +99,29 @@ int main()
 		}
 	}
 	while(choice!=3);
-	
+
 	return 0;
 }
 
-int convert::evaluatePrefix(char prefix[])
+int convert::evaluatePrefix(char prefix[]) /*function to evaluate prefix expression*/
 {
 	stack s;
 	char x;
 	int op1, op2, value, i, length=0;
-	while(prefix[length]!='\0')
+	while(prefix[length]!='\0')  /*calculate length*/
 	{
 		length++;
 	}
 	for(i=length-1; i>=0; i--)
 	{
 		x=prefix[i];
-		if(isalpha(x))
+		if(isalpha(x))  /*if element is an operand, get the value and push*/
 		{
 			cout << "\nEnter the value of " << x << ": ";
 			cin >> value;
 			s.push(value);
 		}
-		else
+		else  /*else, pop two operands, evaluate expression and push result*/
 		{
 			op1=s.pop();
 			op2=s.pop();
@@ -141,13 +141,13 @@ int convert::evaluatePostfix(char postfix[]) /*function to evaluate postfix expr
 	for(i=0; postfix[i]!='\0'; i++)
 	{
 		x=postfix[i];
-		if(isalpha(x))
+		if(isalpha(x))  /*if element is an operand, get the value and push*/
 		{
 			cout << "\nEnter the value of " << x << ": ";
 			cin >> value;
 			s.push(value);
 		}
-		else
+		else  /*else, pop two operands, evaluate expression and push result*/
 		{
 			op2=s.pop();
 			op1=s.pop();
@@ -177,7 +177,7 @@ int convert::evaluate(char x, int op1, int op2) /*function to get value of an ex
 
 int convert::infixToPostfix(char infix[], char postfix[]) /*function to convert expression from infix to postfix*/
 {
-	if(inputValidation(infix)==-1)
+	if(inputValidation(infix)==-1)  /*validate the infix expression*/
 	{
 		return -1;
 	}
@@ -189,40 +189,40 @@ int convert::infixToPostfix(char infix[], char postfix[]) /*function to convert 
 		for(i=0; infix[i]!='\0'; i++)
 		{
 			scan=infix[i];
-			if((scan>='a' && scan<='z') || (scan>='A' && scan<='Z') || (scan>='0' && scan<='9'))
+			if((scan>='a' && scan<='z') || (scan>='A' && scan<='Z') || (scan>='0' && scan<='9'))  /*if element is an operand, output it*/
 			{
 				postfix[j]=scan;
 				j++;
 			}
-			else if(scan=='(')
+			else if(scan=='(') /*if opening parentheses is scanned, push it onto stack*/
 			{
 				s.push(scan);
 			}
 			else if(scan==')')
 			{
-				while(s.getTop()!='(' && !s.empty())
+				while(s.getTop()!='(' && !s.empty()) /*if closing parentheses is scanned, pop elements until opening parentheses is encountered and stack is not empty*/
 				{
 					c=s.pop();
 					postfix[j]=c;
 					j++;
 				}
-				if(s.getTop()=='(')
+				if(s.getTop()=='(') /*if opening parentheses is on top of the stack, pop it*/
 				{
 					c=s.pop();
 				}
 			}
 			else
 			{
-				while(precedence(scan)<=precedence(s.getTop()) && !s.empty())
+				while(precedence(scan)<=precedence(s.getTop()) && !s.empty()) /*else, while precedence of scanned element is less than or equal to that of element on top and stack is not empty, output elements*/
 				{
 					c=s.pop();
 					postfix[j]=c;
 					j++;
 				}
 				s.push(scan);
-			}	
+			}
 		}
-		while(!s.empty())
+		while(!s.empty()) /*pop and output all the remaining contents of the stack*/
 		{
 			c=s.pop();
 			postfix[j]=c;
@@ -271,7 +271,7 @@ int convert::infixToPrefix(char infix[], char prefix[]) /*function to convert ex
 	int i, j, length=0, check;
 	while(infix[length]!='\0')
 		length++;
-	for(i=length-1, j=0;i>=0; i--, j++)
+	for(i=length-1, j=0;i>=0; i--, j++)  /*reverse the infix expression*/
 	{
 		if(infix[i]=='(')
 		{
@@ -287,7 +287,7 @@ int convert::infixToPrefix(char infix[], char prefix[]) /*function to convert ex
 		}
 	}
 	rInfix[j]='\0';
-	check=infixToPostfix(rInfix, temp);
+	check=infixToPostfix(rInfix, temp);  /*convert reversed infix to postfix*/
 	if(check==-1)
 	{
 		return -1;
@@ -297,7 +297,7 @@ int convert::infixToPrefix(char infix[], char prefix[]) /*function to convert ex
 		length=0;
 		while(temp[length]!='\0')
 			length++;
-		for(i=length-1, j=0;i>=0; i--, j++)
+		for(i=length-1, j=0;i>=0; i--, j++)  /*reverse output to get prefix expression*/
 		{
 			prefix[j]=temp[i];
 		}
