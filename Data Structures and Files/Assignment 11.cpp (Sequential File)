@@ -1,0 +1,174 @@
+/*
+Department maintains a student information. The file contains roll number, name, division and address. Write a program to create a sequential file to store and maintain student data. It should allow the user to add, delete information of student. Display information of particular employee. If record of student does not exist an appropriate message is displayed. If student record is found it should display the student details.
+*/
+
+#include<iostream>
+#include<fstream>
+#include<string.h>
+
+using namespace std;
+
+class file
+{
+	int roll, div;
+	char name[20];
+	
+	public:
+		void getdata()
+		{
+			ofstream fout;
+			fout.open("myfile1.txt", ios::app|ios::out);
+			cout << "Enter roll number: ";
+			cin >> roll;
+			cout << "Enter name: ";
+			cin >> name;
+			cout << "Enter division: ";
+			cin >> div;
+			fout << roll << endl << name << endl << div << endl;
+
+		}
+	
+		void display()
+		{
+			ifstream fin;
+			fin.open("myfile1.txt");
+			while(!fin.eof())
+			{
+				fin >> roll >> name >> div;
+				cout << "\n" << roll << "\t" << name << "\t" << div << endl;
+			}
+		}
+		
+		void dlete()
+		{
+			ifstream fin;
+			ofstream fout;
+			char name1[20];
+			fin.open("myfile1.txt");
+			fout.open("mfile.txt");
+			cout<<"Enter name to be deleted : ";
+			cin>>name1;
+			while(!fin.eof())
+			{
+				fin >> roll >> name >> div;
+				if((strcmp(name,name1))!=0)
+				{
+					fout << roll << endl << name << endl << div << endl;
+				}
+			}
+			fin.close();
+			fout.close();
+			remove("myfile1.txt");
+			rename("mfile.txt","myfile1.txt");
+		}
+		
+		void modify()
+		{
+		    char name1[20];
+		    int choice=0;
+		    ifstream fin;
+		    ofstream fout;
+            fin.open("myfile1.txt");
+			fout.open("mfile.txt");
+			cout<<"Enter name to be modified: ";
+			cin>>name1;
+			while(!fin.eof())
+			{
+				fin >> roll >> name >> div;
+				if((strcmp(name,name1))==0)
+                {
+					while(choice!=4)
+                  	{
+                    	cout<<"\n1. Roll Number\n2. Name\n3. Division\n4. Exit\n";
+                    	cin>>choice;
+                    	switch(choice)
+						{
+							case 1:	cout<<"Enter roll no.: ";
+                                	cin>>roll;
+									break;
+                        	case 2:	cout<<"Enter name: ";
+                                	cin>>name;
+									break;
+                        	case 3:	cout<<"Enter division: ";
+                                	cin>>div;
+									break;
+                    	}
+                  	}
+					cout<<"\nModified data: \n";
+					cout<<"\nROLL\tNAME\tDIVISION\n";
+					cout<<roll<<"\t"<<name<<"\t"<<div<<endl;
+                }
+				fout << roll << endl << name << endl << div << endl;
+			}
+			fin.close();
+			fout.close();
+			remove("myfile1.txt");
+			rename("mfile.txt", "myfile1.txt");
+			if(choice==0)
+                cout<<"\nRequested data not found\n";
+            else
+                cout<<"\nAfter modification: \n";
+		}
+};
+
+int main()
+{
+	file obj;
+	ofstream fout;
+	fout.open("myfile1.txt", ios::trunc);
+	fout.close();
+	ifstream fin;
+	int n, i, choice=0;
+	while(choice!=6)
+	{
+		cout<<"\n1.Create Database\n2.Display\n3.Add\n4.Delete\n5.Modify\n6.Exit\n";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:
+				{
+					cout<<"Enter number of students : ";
+					cin>>n;
+					cout<<"\nEnter data" << endl;
+					for(i=0; i<n; i++)
+					{
+						obj.getdata();
+					}
+					break;
+				}
+			case 2:
+				{
+					cout<<"\nROLL\tNAME\tDIVISION\n";
+					obj.display();
+					break;
+				}
+			case 3:
+				{
+					obj.getdata();
+                    cout<<"\nNew data: \n";
+					cout<<"\nROLL\tNAME\tDIVISION\n";
+                    obj.display();
+                    break;
+				}
+			case 4:
+				{
+					obj.dlete();
+					cout<<"\nAfter deletion: \n";
+					cout<<"\nROLL\tNAME\tDIVISION\n"; 
+					obj.display();
+					break;
+				}
+			case 5:
+				{
+					obj.modify();
+					obj.display();
+					break;
+				}
+			case 6: break;
+			default:
+				{
+					cout << "Invalid choice!" << endl;
+				}
+		}
+	}
+}
