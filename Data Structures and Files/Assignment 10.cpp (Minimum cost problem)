@@ -1,1 +1,295 @@
-
+#include<iostream>
+#include<string.h>
+#define MAX 25
+using namespace std;
+class office
+{
+	char country[30];
+public:
+	office()
+	{
+		country[0]='\0';
+	}
+	void read();
+	void disp();
+	int match(office);
+	void copy(office);
+	char* getcity();
+};
+void office::read()
+{
+	cout<<"Enter country of the office:";
+	cin>>country;
+}
+void office::disp()
+{
+	cout<<country;
+}
+int office::match(office O)
+{
+	int flag;
+	flag=strcmp(country,O.country);
+	if(flag==0)
+		return 1;
+	else
+		return 0;
+}
+void office::copy(office O)
+{
+	strcpy(country,O.country);
+}
+char* office::getcity()
+{
+	return country;
+}
+class Node
+{
+public:
+	office O;
+	int cost;
+	Node *next;
+public:
+	Node()
+	{
+		cost=0;
+		next=NULL;
+	}
+};
+class network
+{
+	Node list[MAX];
+	int total;
+public:
+	network()
+	{
+		total=0;
+	}
+	void addcity(void);
+	int searchoffice(office);
+	void add_line(void);
+	int existing(int,office);
+	void display(void);
+	void Prims(void);
+};
+int network::searchoffice(office O_new)
+{
+	for(int cnt=0;cnt<total;cnt++)
+	{
+		if(list[cnt].O.match(O_new))
+			return cnt;
+	}
+	return -1;
+}
+void network::addcity()
+{
+	office temp;
+	temp.read();
+	if(searchoffice(temp)==-1)
+	{
+		list[total++].O.copy(temp);
+		cout<<"Office has been added!\n";
+	}
+	else
+		cout<<"This office has already been added!\n";
+}
+int network::existing(int Office1,office Office2)
+{
+	Node *ptr;
+	ptr=list[Office1].next;
+	while(ptr!=NULL)
+	{
+		if(ptr->O.match(Office2))
+			return 1;
+		ptr=ptr->next;
+	}
+	return 0;
+}
+void network::add_line()
+{
+	int O1=0,O2=0;
+	office country1,country2;
+	Node *temp=NULL,*temp2=NULL,*temp_link=NULL;
+	cout<<"Office In Various Countries:\n";
+	for(int cnt=0;cnt<total;cnt++)
+	{
+		cout<<cnt+1<<":";
+		list[cnt].O.disp();
+		cout<<endl;
+	}
+	country1.read();
+	O1=searchoffice(country1);
+	if(O1!=-1)
+	{
+		int i=1;
+		cout<<"Other Offices In Different Countries:\n";
+		for(int cnt=0;cnt<total;cnt++)
+		{ 
+			if(cnt!=O1)
+			{
+				cout<<i++<<":";
+				list[cnt].O.disp();
+				cout<<endl;    
+			}
+		}
+		country2.read();
+		O2=searchoffice(country2);
+		if(O2!=-1)
+		{
+			if(!existing(O1,country2))
+			{
+				int cost=0;
+				cout<<"Enter The Cost Of Phone Line:";
+				cin>>cost;
+				temp=new Node;
+				temp->cost=cost;
+				temp->O.copy(country2);
+				temp->next=NULL;
+				temp_link=&list[O1];
+				while(temp_link->next!=NULL)
+				{
+					temp_link=temp_link->next;
+				}
+				temp_link->next=temp;
+				temp=new Node;
+				temp->cost=cost;
+				temp->O.copy(country1);
+				temp->next=NULL;
+				temp_link=&list[O2];
+				while(temp_link->next!=NULL)
+				{
+					temp_link=temp_link->next;
+				}
+				temp_link->next=temp;
+				cout<<"Phone Line is Added!\n";
+			}
+			else
+				cout<<"Phone Line Already Exists!\n";		     
+		}
+		else
+			cout<<"Office not found!!\n";
+	}
+	else
+		cout<<"Office not found!!\n";
+}
+void network::display()
+{
+	int num=1;
+	Node *temp;
+	for(int cnt=0;cnt<total;cnt++)
+	{
+		cout<<"OFFICE:"<<num++<<"::";
+		list[cnt].O.disp();
+		temp=list[cnt].next;
+		cout<<"\nIs connected to:\n";
+		if(temp!=NULL)
+		{
+			while(temp!=NULL)
+			{
+				cout<<"\n\t";
+				temp->O.disp();
+				cout<<"\tCOST::"<<temp->cost;
+				temp=temp->next;
+			}
+		}
+		else
+			cout<<"No other office!";
+		cout<<"\n========================================\n";
+	}
+}
+void network::Prims()
+{
+	int visited[15],start[15],end[15],cnt=0,index1=0,index2=0,min=9999,totalCost=0,endVertex=0;
+	Node *temp=NULL;
+	for(int cnt1=0;cnt1<total;cnt1++)
+		visited[cnt1]=0;
+	do
+	{   
+		cout<<"\nChoose A Source Office : \n";
+		for(int cnt1=0;cnt1<total;cnt1++)
+		{
+			cout<<cnt1+1<<":";
+			list[cnt1].O.disp();
+			cout<<endl;
+		}
+		cout<<"Enter Office number:";
+		cin>>index1;
+		if(index1<1||index1>total)
+			cout<<"Wrong Choice!\n";
+	}while(index1<1||index1>total);
+	index1--;
+	visited[index1]=1;
+	for(int cnt1=0;cnt1<total-1;cnt1++)
+	{ 
+		min=9999;
+		for(int cnt2=0;cnt2<total;cnt2++)
+		{   
+			if(visited[cnt2]==1)
+			{
+				temp=list[cnt2].next;
+				while(temp!=NULL)
+				{
+					index2=searchoffice(temp->O);
+					if(temp->cost<min && visited[index2]!=1)
+					{
+						min=temp->cost;
+						endVertex=index2;
+						start[cnt]=cnt2;
+					}
+					temp=temp->next;
+				}
+			}
+		}
+		totalCost+=min;
+		end[cnt]=endVertex;
+		visited[endVertex]=1;
+		cnt++;
+	}
+	cout<<"Following are the edges added::\n";
+	for(int cnt1=0;cnt1<cnt;cnt1++)
+	{
+		cout<<cnt1+1<<": ";
+		list[start[cnt1]].O.disp();
+		cout<<"->";
+		list[end[cnt1]].O.disp();
+		cout<<endl;
+	}
+	cout<<"Total Cost : "<<totalCost<<endl;
+}
+int main()
+{
+	network N;
+	int flag=0;
+	int choice;
+	do
+	{
+		cout<<"-----------------------BUSINESS NETWORK------------------------\n";
+		cout<<"MENU::\n1.Add a New Office\n2.Add Phone Lines\n3.Display offices\n";
+		cout<<"4.Prims\n5.Exit\nEnter Choice:";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:N.addcity(); 
+				flag=1;
+				break;
+			case 2:if(flag==1)
+					N.add_line();
+				else
+					cout<<"Empty Network!\n";
+				break;
+			case 3:if(flag==1)
+		   			N.display();
+				else
+					cout<<"Empty Network!\n";
+				break;
+			case 4:if(flag == 1)
+					N.Prims();
+				else
+					cout<<"Empty Network!\n";
+				break;
+			case 5:cout<<"Thank You!\n";
+				break;
+			default:cout<<"Wrong Choice!\n";
+		}
+	}while(choice!=5);
+	return 0;
+}
