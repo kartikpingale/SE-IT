@@ -1,1 +1,269 @@
-
+#include<iostream>
+using namespace std;
+class graph
+{
+	int num,cost[10][10];
+	char names[10][25];
+public:
+	graph()
+	{
+		do
+		{
+			cout<<"How many cities are there in the graph?(1 to 10):";
+			cin>>num;
+			if(num<1 || num>10)
+			{
+				cout<<"Invalid Input!!\n";
+			}
+			else
+			{
+				for(int cnt=0;cnt<num;cnt++)
+				{
+					cout<<"Enter city "<<cnt+1<<":";
+					cin>>names[cnt];
+				}
+			}
+		}while(num<0 || num>10);
+		for(int cnt=0;cnt<num;cnt++)
+		{
+			for(int cnt2=0;cnt2<num;cnt2++)
+			{
+				cost[cnt][cnt2]=9999;
+			}
+		}
+	}
+	void dispcities();
+	void read(void);
+	void display(void);
+	void shortest_path(void);
+	int choose(int[],int,int[]);
+};
+void graph::dispcities()
+{
+	cout<<"Following are the cities:\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<cnt+1<<": "<<names[cnt]<<endl;
+	}
+}
+void graph::read(void)
+{
+	int choice,v1,v2,cst,ch;
+	do
+	{
+		cout<<"How do you wish to represent graph:\n1:Directed\n2:Undirected\nEnter choice:";
+		cin>>ch;
+		if(ch!=1 && ch!=2)
+			cout<<"Wrong choice!!\n";
+	}while(ch!=1 && ch!=2);
+	do
+	{
+		cout<<"Do you wish to add a path?\n1:Yes\n2:No\nEnter choice:";
+		cin>>choice;
+		if(choice==1)
+		{
+			dispcities();
+			cout<<"Enter starting vertex:";
+			cin>>v1;
+			v1--;
+			cout<<"Enter ending vertex:";
+			cin>>v2;
+			v2--;
+			if(v1<0 || v1>=num || v2<0 || v2>=num || v1==v2)
+			{
+				cout<<"Invalid Input!!\n";
+				continue;
+			}
+			else if(cost[v1][v2]==9999)
+			{
+				cout<<"Enter cost of the path:";
+				cin>>cst;
+				if(cst<1 || cst>9998)
+					cout<<"Invalid distance!!\n";
+				else
+				{
+					cost[v1][v2]=cst;
+					if(ch==2)
+						cost[v2][v1]=cst;
+				}
+			}
+			else
+				cout<<"Cost has already been entered!!\n";
+		}
+		else if(choice==2)
+		{
+				cout<<"Paths have been made!!\n";
+		}
+		else
+		{
+			cout<<"Wrong choice!!\n";
+		}
+		cout<<"-----------------------------------\n";
+	}while(choice!=2);
+}
+void graph::display(void)
+{
+	cout<<"Following is the matrix representation of the graph:\n\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<"\t|"<<names[cnt];
+	}
+	cout<<"\n------------------------------------------------------------------";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<"\n"<<names[cnt];
+		for(int cnt2=0;cnt2<num;cnt2++)
+		{
+			cout<<"\t|"<<cost[cnt][cnt2];
+		}
+	}
+	cout<<endl;
+}
+int graph::choose(int dist[],int n,int found[])
+{
+	int min=9999,min_pos=-1;
+	for(int i=0;i<num;i++)
+	{
+		if(dist[i]<min && !found[i])
+		{
+			min=dist[i];
+			min_pos=i;
+		}
+	}
+	return min_pos;
+}
+void graph::shortest_path(void)
+{
+	int source,found[num],dist[num],u,link[num][num+1],cnt1,choice;
+	do
+	{
+		dispcities();
+		cout<<"Enter source vertex:";
+		cin>>source;
+		source--;
+		if(source<0 || source>=num)
+			cout<<"Invalid coice!!\n";
+	}while(source<0 || source>=num);
+	cout<<"\n\nITERATIONS::\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<"\t|"<<names[cnt];
+	}
+	cout<<"\n----------------------------------------------------------------\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		found[cnt]=0;
+		dist[cnt]=cost[source][cnt];
+		if(dist[cnt]!=9999)
+		{
+			link[cnt][0]=1;
+			link[cnt][1]=source;
+		}
+		else
+			link[cnt][0]=0;
+	}
+	found[source]=1;
+	dist[source]=0;
+	cout<<names[source];
+	for(int cnt2=0;cnt2<num;cnt2++)
+	{
+		cout<<"\t|"<<dist[cnt2];
+	}
+	for(int cnt=0;cnt<num-2;cnt++)
+	{
+		cout<<endl;
+		u=choose(dist,num,found);
+		found[u]=1;
+		for(int w=0;w<num;w++)
+		{
+			if(!found[w])
+			{
+				if(dist[u]+cost[u][w] < dist[w])
+				{
+					link[w][0]=link[u][0];
+					for(int x=1;x<=link[u][0];x++)
+					{
+						link[w][x]=link[u][x];
+					}
+					link[w][++link[w][0]]=u;
+					dist[w]=dist[u]+cost[u][w];
+				}
+			}
+		}
+		cout<<names[u];
+		for(int cnt2=0;cnt2<num;cnt2++)
+		{
+			cout<<"\t|"<<dist[cnt2];
+		}
+	}
+	do
+	{
+		cout<<"\n\nYou wish to find path for-\n1:Particular City\n2:All cities\nEnter choice:";
+		cin>>choice;
+		if(choice!=1 && choice!=2)
+			cout<<"Wrong choice!!";
+	}while(choice!=1 && choice!=2);
+	if(choice==2)
+	{
+		cout<<"\nPATHS are:\n\nCITY\t| COST\t|      PATH\n-------------------------------------------------------------\n";
+		for(int cnt=0;cnt<num;cnt++)
+		{
+			if(link[cnt][0]!=0)
+			{
+				cout<<names[cnt]<<"\t|  "<<dist[cnt]<<"\t|";
+				for(cnt1=1;cnt1<link[cnt][0];cnt1++)
+				{
+					cout<<names[link[cnt][cnt1]]<<"->";
+				}
+				cout<<names[link[cnt][cnt1]]<<"->"<<names[cnt]<<endl;
+			}
+		}
+	}
+	else
+	{
+		do
+		{
+			cout<<"Which city you wish to find path for?:"<<endl;
+			dispcities();
+			cout<<"Enter destination city:";
+			cin>>choice;
+			choice--;
+			if(choice<0 || choice>=num)
+				cout<<"Wrong choice!!\n";
+		}while(choice<0 || choice>=num);
+		if(link[choice][0]!=0)
+		{
+			cout<<"\nPATHS are:\n\nCITY\t| COST\t|      PATH\n-------------------------------------------------------------\n";
+			cout<<names[choice]<<"\t|  "<<dist[choice]<<"\t|";
+			for(cnt1=1;cnt1<link[choice][0];cnt1++)
+			{
+				cout<<names[link[choice][cnt1]]<<"->";
+			}
+			cout<<names[link[choice][cnt1]]<<"->"<<names[choice]<<endl;
+		}
+		else
+			cout<<"No path to this city!\n";
+	}
+}
+int main()
+{
+	int choice;
+	graph G;
+	G.read();
+	cout<<"----------------------------GRAPH------------------------------------\n";
+	G.display();
+	do
+	{
+		cout<<"\n-----------------------------Shortest Paths--------------------------------\n";
+		G.shortest_path();
+		cout<<"\n---------------------------------------------------------------------------\n";
+		do
+		{
+			cout<<"Do you wish to shortest paths from another vertex?\n1:Yes\n2:No\nEnter choice:";
+			cin>>choice;
+			if(choice!=1 && choice!=2)
+				cout<<"Wrong choice!!\n";
+		}while(choice!=1 && choice!=2);
+	}while(choice!=2);
+	return 0;
+}
