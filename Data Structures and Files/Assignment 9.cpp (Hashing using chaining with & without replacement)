@@ -1,1 +1,301 @@
-
+#include<iostream>
+#include<string.h>
+#define MAX 11
+using namespace std;
+class student
+{
+	char name[20],mobile[11];
+	int chain;
+public:
+	student()
+	{
+		name[0]=mobile[0]='-';
+		name[1]=mobile[1]='\0';
+		chain=-1;
+	}
+	void read(void);
+	void disp(void);
+	int getchain(void);
+	char* getnumber(void);
+	void updatechain(int);
+	void modifyname(char[]);
+};
+int validnumber(char mobile[])
+{
+	int len;
+	len=strlen(mobile);
+	if(len!=10)
+		return 0;
+	for(int cnt=0;cnt<len;cnt++)
+	{
+		if(mobile[cnt]<48 || mobile[cnt]>57)
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
+void student::read(void)
+{
+	int len,flag;
+	cin.ignore();
+	cout<<"Enter name:";
+	cin.getline(name,20);
+	do
+	{
+		flag=1;
+		cout<<"Enter mobile number:";
+		cin>>mobile;
+		flag=validnumber(mobile);
+		if(flag==0)
+			cout<<"Enter valid number!!\n";
+	}while(flag==0);
+}
+void student::disp(void)
+{
+	if(mobile[0]=='-')
+		cout<<"|   "<<name<<"    |     "<<mobile<<"      |  "<<chain<<"   |"<<endl;
+	else
+		cout<<"| "<<name<<" | "<<mobile<<" |   "<<chain<<"   |"<<endl;
+}
+int student::getchain(void)
+{
+	return chain;
+}
+char* student::getnumber(void)
+{
+	return mobile;
+}
+void student::updatechain(int index)
+{
+	chain=index;
+}
+void student::modifyname(char newname[])
+{
+	strcpy(name,newname);
+}
+class hash_table
+{
+	student table[MAX];
+	int count;
+	int is_full(void);
+	int hash(char[]);
+public:
+	hash_table()
+	{
+		count=0;
+	}
+	void insert(void);
+	void insertR(void);
+	void display(void);
+	void disp(int);
+	int search(char[]);
+	void modify(void);
+	void clear(void);
+};
+int hash_table::is_full(void)
+{
+	if(count==MAX)
+		return 1;
+	else
+		return 0;
+}
+int hash_table::hash(char number[])
+{
+	int total=0;
+	for(int cnt=0;cnt<10;cnt=cnt+2)
+	{
+		total+=((number[cnt]-48)*10)+(number[cnt+1]-48);
+	}
+	return total%MAX;
+}
+void hash_table::insert(void)
+{
+	if(!is_full())
+	{
+		int index,oldindex;
+		student S;
+		S.read();
+		index=hash(S.getnumber());
+		if(strcmp(table[index].getnumber(),"-\0")!=0)
+		{
+			while(table[index].getchain()!=-1)
+			{
+				index=table[index].getchain();
+			}
+			oldindex=index;
+			while(strcmp(table[index].getnumber(),"-\0")!=0)
+			{
+				index=(index+1)%MAX;
+			}
+			table[oldindex].updatechain(index);
+		}
+		table[index]=S;
+		count++;
+	}
+	else
+		cout<<"Cannot Insert!Table is full!\n";
+}
+void hash_table::insertR(void)
+{
+	if(!is_full())
+	{
+		int index,oldindex,tempindex;
+		student S,temp;
+		S.read();
+		index=hash(S.getnumber());
+		if(strcmp(table[index].getnumber(),"-\0")!=0)
+		{
+			if(hash(table[index].getnumber())==index)
+			{
+				while(table[index].getchain()!=-1)
+				{
+					index=table[index].getchain();
+				}
+				oldindex=index;
+				while(strcmp(table[index].getnumber(),"-\0")!=0)
+				{
+					index=(index+1)%MAX;
+				}
+				table[oldindex].updatechain(index);
+			}
+			else
+			{
+				temp=table[index];
+				table[index]=S;
+				S=temp;
+				oldindex=index;
+				while(strcmp(table[index].getnumber(),"-\0")!=0)
+				{
+					index=(index+1)%MAX;
+				}
+				tempindex=hash(S.getnumber());
+				while(table[tempindex].getchain()!=oldindex)
+				{
+					tempindex=table[tempindex].getchain();
+				}
+				table[tempindex].updatechain(index);
+			}
+		}
+		table[index]=S;
+		count++;
+	}
+	else
+		cout<<"Cannot Insert!Table is full!\n";
+}
+void hash_table::display(void)
+{
+	cout<<"===============================\n";
+	cout<<"|  NAME  |   MOBILE   | CHAIN |\n";
+	cout<<"===============================\n";
+	for(int cnt=0;cnt<MAX;cnt++)
+		table[cnt].disp();
+	cout<<"===============================\n";
+}
+void hash_table::disp(int index)
+{
+	cout<<"===============================\n";
+	cout<<"|  NAME  |   MOBILE   | CHAIN |\n";
+	cout<<"===============================\n";
+	table[index].disp();
+	cout<<"===============================\n";
+}
+int hash_table::search(char key[])
+{
+	int index=hash(key);
+	while(index!=-1 && strcmp(table[index].getnumber(),key)!=0)
+	{
+		index=table[index].getchain();
+	}
+	return index;
+}
+void hash_table::modify(void)
+{
+	char key[11],data[20];
+	int index;
+	cout<<"Enter mobile number of the data to modify:";
+	cin>>key;
+	if(validnumber(key))
+	{
+		index=search(key);
+		if(index==-1)
+			cout<<"Record not found!\n";
+		else
+		{
+			cout<<"Record found!\n";
+			disp(index);
+			cin.ignore();
+			cout<<"Enter new name:";
+			cin.getline(data,20);
+			table[index].modifyname(data);
+		}
+	}
+	else
+		cout<<"Invalid number!\n";
+}
+void hash_table::clear(void)
+{
+	student S;
+	for(int cnt=0;cnt<MAX;cnt++)
+	{
+		table[cnt]=S;
+	}
+}
+int main()
+{
+	hash_table H;
+	char key[11];
+	int choice,type,index;
+	do
+	{
+		H.clear();
+		cout<<"What type of collision resolution?\n1:Chaining with replacement";
+		cout<<"\n2:Chaining without replacement\n3:EXIT\nEnter choice:";
+		cin>>type;
+		if(type==1 || type==2)
+		{
+			do
+			{
+				cout<<"-------------------HASHING-----------------------\n";
+				cout<<"MENU::\n1:Add record\n2:Display records\n3:Search r";
+				cout<<"ecord\n4:Modify\n5:Exit\nEnter choice:";
+				cin>>choice;
+				switch(choice)
+				{
+					case 1:if(type==2)
+							H.insert();
+						else
+							H.insertR();
+						break;
+					case 2:H.display();
+						break;
+					case 3:cout<<"Enter number to search:";
+						cin>>key;
+						if(validnumber(key))
+						{
+							index=H.search(key);
+							if(index==-1)
+								cout<<"Record not found!\n";
+							else
+							{
+								cout<<"Record found!\n";
+								H.disp(index);
+							}
+						}
+						else
+							cout<<"Invalid number!\n";
+						break;
+					case 4:H.modify();
+						break;
+					case 5:break;
+					default:cout<<"Wrong Choice!\n";
+				}
+			}while(choice!=5);
+		}
+		else if(type==3)
+			cout<<"Thank You!\n";
+		else
+			cout<<"Wrong choice!\n";
+	}while(type!=3);
+	return 0;
+}
