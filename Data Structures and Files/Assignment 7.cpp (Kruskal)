@@ -1,1 +1,225 @@
-
+#include<iostream>
+#include "edges.h"
+using namespace std;
+class graph
+{
+	int adj_mat[MAX][MAX],num;
+	edges E;
+	void initialize(void);
+	int checkcycle(int,int,int);
+public:
+	graph()
+	{
+		initialize();
+	}
+	void getdata(void);
+	void display(void);
+	void Kruskal(graph);
+};
+void graph::initialize(void)
+{
+	num=0;
+	for(int cnt1=0;cnt1<MAX;cnt1++)
+	{
+		for(int cnt2=0;cnt2<MAX;cnt2++)
+		{
+			adj_mat[cnt1][cnt2]=9999;
+		}
+	}
+	E.reset();
+}
+void graph::getdata(void)
+{
+	int choice;
+	edge new_edge;
+	initialize();
+	do
+	{
+		cout<<"Enter number of vertices:";
+		cin>>num;
+		if(num<1)
+			cout<<"There must be atleast 1 vertex!!\n";
+	}while(num<1);
+	do
+	{
+		cout<<"Do you wish to a path?\n1:Yes\n2:No\nEnter choice:";
+		cin>>choice;
+		if(choice==1)
+		{
+			cout<<"Enter vertex 1(0 to "<<num-1<<"):";
+			cin>>new_edge.v1;
+			cout<<"Enter vertex 2(0 to "<<num-1<<"):";
+			cin>>new_edge.v2;
+			if(new_edge.v1<0 || new_edge.v1>=num || new_edge.v2<0 || new_edge.v2>=num || new_edge.v1==new_edge.v2)
+			{
+				cout<<"Invalid Input!!\n";
+				continue;
+			}
+			else if(adj_mat[new_edge.v1][new_edge.v2]==9999)
+			{
+				cout<<"Enter cost of the path:";
+				cin>>new_edge.wt;
+				if(new_edge.wt<1 || new_edge.wt>9998)
+					cout<<"Invalid distance!!\n";
+				else
+				{
+					adj_mat[new_edge.v1][new_edge.v2]=new_edge.wt;
+					adj_mat[new_edge.v2][new_edge.v1]=new_edge.wt;
+					E.add(new_edge);
+				}
+			}
+			else
+				cout<<"Cost has already been entered!!\n";
+		}
+		else if(choice==2)
+			cout<<"Paths have been made!!"<<endl;
+		else
+			cout<<"Wrong choice!!\n";
+		cout<<"-----------------------------------\n";
+	}while(choice!=2);
+}
+void graph::display(void)
+{
+	cout<<"Following is the matrix representation of the graph:";
+	cout<<"\n=============================================================\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<"\t|"<<cnt;
+	}
+	cout<<"\n=============================================================\n";
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		cout<<"\n"<<cnt;
+		for(int cnt2=0;cnt2<num;cnt2++)
+		{
+			cout<<"\t|"<<adj_mat[cnt][cnt2];
+		}
+	}
+	cout<<"\n=============================================================\n\n";
+}
+int graph::checkcycle(int v,int pre,int flag)
+{
+	static int visited[MAX];
+	int flag1;
+	if(flag==0)
+		for(int cnt=0;cnt<MAX;cnt++)
+			visited[cnt]=0;
+	visited[v]=1;
+	for(int cnt=0;cnt<MAX;cnt++)
+	{
+		if(adj_mat[v][cnt]!=9999 && cnt!=pre)
+		{
+			if(visited[cnt]!=1)
+			{
+				flag1=checkcycle(cnt,v,1);
+				if(flag1==1)
+					return 1;
+			}
+			else
+				return 1;
+		}
+	}
+	return 0;
+}
+void graph::Kruskal(graph G)
+{
+	cout<<"-----------------------------SPANNING TREE--------------------------------\n";
+	initialize();
+	num=G.num;
+	edge new_edge;
+	int flag,visited[num],edge[3],total=0;;
+	for(int cnt=0;cnt<num;cnt++)
+	{
+		visited[cnt]=0;
+	}
+	cout<<"EDGES ARE ADDED IN SPANNING TREE IN THE FOLLOWING ORDER:\n";
+	while(E.getcount()<num-1 && !G.E.is_empty())
+	{
+		new_edge=G.E.getedge();
+		if(visited[new_edge.v1]==1 && visited[new_edge.v2]==1)
+		{
+			E.add(new_edge);
+			adj_mat[new_edge.v1][new_edge.v2]=new_edge.wt;
+			adj_mat[new_edge.v2][new_edge.v1]=new_edge.wt;
+			flag=checkcycle(new_edge.v1,-1,0);
+			if(flag==1)
+			{
+				adj_mat[new_edge.v1][new_edge.v2]=9999;
+				adj_mat[new_edge.v2][new_edge.v1]=9999;
+				E.remove();
+			}
+			else
+			{
+				total+=new_edge.wt;
+				new_edge.disp_edge();
+				flag=1;
+			}
+		}
+		else
+		{
+			visited[new_edge.v1]=1;
+			visited[new_edge.v2]=1;
+			E.add(new_edge);
+			total+=new_edge.wt;
+			adj_mat[new_edge.v1][new_edge.v2]=new_edge.wt;
+			adj_mat[new_edge.v2][new_edge.v1]=new_edge.wt;
+			new_edge.disp_edge();
+		}
+	}
+	if(E.getcount()<num-1)
+		cout<<"There is no spanning tree!!\n";
+	else
+	{
+		display();
+		cout<<"TOTAL COST OF SPANNING TREE IS:"<<total<<endl;
+	}
+}
+int main()
+{
+	graph G,spanning;
+	int choice,flag=0,ch;
+	do
+	{
+		cout<<"---------------------------KRUSKAL'S------------------------------\n";
+		cout<<"Menu::\n1:Create\n2:Display\n3:Kruskal\n4:Exit\nEnter choice:";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:if(flag==1)
+				{
+					do
+					{
+						cout<<"Do you wish to overwrite previous graph?\n1:Yes\n2:No\nEnter choice:";
+						cin>>ch;
+						if(ch!=1 && ch!=2)
+							cout<<"Wrong choice!!\n";
+					}while(ch!=1 && ch!=2);
+				}
+				else
+					ch=1;
+				if(ch==1)
+				{
+					flag=1;
+					G.getdata();
+				}
+				break;
+			case 2:if(flag==1)
+				{
+					cout<<"---------------------------GRAPH------------------------------\n";
+					G.display();
+				}
+				else
+					cout<<"No graph created yet!!\n";
+				break;
+			case 3:if(flag==1)
+					spanning.Kruskal(G);
+				else
+					cout<<"No graph created yet!!\n";
+				break;
+			case 4:cout<<"Thank You!!\n";
+				break;
+			default:cout<<"Wrong choice!!\n";
+		}
+	}while(choice!=4);
+	return 0;
+}
