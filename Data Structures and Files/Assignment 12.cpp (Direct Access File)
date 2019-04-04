@@ -1,1 +1,297 @@
-
+#include<iostream>
+#include<fstream>
+#define MAX 11
+using namespace std;
+class employee
+{
+	char name[20];
+	int salary,ID,chain;
+public:
+	employee()
+	{
+		ID=-1;
+		name[0]='-';
+		name[1]='\0';
+		salary=0;
+		chain=-1;
+	}
+	void read(void);
+	void disp(void);
+	int getID(void);
+	void update_chain(int);
+	int get_chain(void);
+	void updateName(void);
+	void updateSalary(void);
+};
+void employee::read(void)
+{
+	cin.ignore();
+	cout<<"Enter name:";
+	cin.getline(name,20);
+	do
+	{
+		cout<<"Enter ID:";
+		cin>>ID;
+		if(ID<0)
+			cout<<"Enter positive ID";
+	}while(ID<0);
+	do
+	{
+		cout<<"Enter Salary:";
+		cin>>salary;
+		if(salary<0)
+			cout<<"Salary cannot be negative!\n";
+	}while(salary<0);
+}
+void employee::disp(void)
+{
+	if(ID==-1)
+		cout<<"|   "<<name<<"    | "<<ID<<" |   "<<salary<<"   |  "<<chain<<"   |\n";
+	else
+		cout<<"| "<<name<<" | "<<ID<<" |  "<<salary<<"  |   "<<chain<<"   |"<<endl;
+}
+void employee::update_chain(int index)
+{
+	chain=index;
+}
+int employee::getID(void)
+{
+	return ID;
+}
+int employee::get_chain(void)
+{
+	return chain;
+}
+void employee::updateName(void)
+{
+	cin.ignore();
+	cout<<"Enter new name:";
+	cin.getline(name,20);
+}
+void employee::updateSalary(void)
+{
+	do
+	{
+		cout<<"Enter Salary:";
+		cin>>salary;
+		if(salary<0)
+			cout<<"Salary cannot be negative!\n";
+	}while(salary<0);
+}
+class file
+{
+	int count;
+	int is_full(void);
+	int hash(int);
+public:
+	file()
+	{
+		fstream fptr;
+		int total=0,temp_id;
+		count=0;
+		fptr.open("Employee.bin",ios::in);
+		employee E;
+		while(fptr.read((char *)&E,sizeof(E)))
+		{
+			temp_id=E.getID();
+			if(temp_id!=-1)
+				count++;
+			total++;
+		}
+		fptr.close();
+		if(total==0)
+		{
+			fptr.open("Employee.bin",ios::app);
+			for(int cnt=0;cnt<MAX;cnt++)
+			{
+				fptr.write((char *)&E,sizeof(E));
+			}
+			fptr.close();
+		}
+	}
+	void insert(void);
+	void display(void);
+	int search(int);
+	void modify(void);
+};
+int file::is_full(void)
+{
+	if(count==MAX)
+		return 1;
+	else
+		return 0;
+}
+int file::hash(int key)
+{
+	return (key%MAX);
+}
+void file::insert(void)
+{
+	if(!is_full())
+	{
+		fstream fptr;
+		int index,oldIndex;
+		employee E,oldEmp,temp;
+		fptr.open("Employee.bin", ios::in | ios::out);
+		E.read();
+		index=hash(E.getID());
+		fptr.seekg(index*sizeof(E));
+		fptr.read((char*)&oldEmp, sizeof(oldEmp));
+		if(oldEmp.getID()!=-1)
+		{
+			while(oldEmp.get_chain()!=-1)
+			{
+				index=oldEmp.get_chain();
+				fptr.seekg(index*sizeof(oldEmp));
+				fptr.read((char*)&oldEmp,sizeof(oldEmp));
+			}
+			oldIndex=index;
+			temp=oldEmp;
+			while(temp.getID()!=-1)
+			{
+				index=(index+1)%MAX;
+				fptr.seekg(index*sizeof(temp));
+				fptr.read((char*)&temp,sizeof(temp));
+			}
+			oldEmp.update_chain(index);
+			fptr.seekp(oldIndex* sizeof(oldEmp));
+			fptr.write((char*)&oldEmp,sizeof(oldEmp));
+		}
+		fptr.seekp(index*sizeof(E));
+		fptr.write((char*)&E,sizeof(E));
+		count++;
+		fptr.close();
+	}
+	else
+		cout<<"Table is full!\n";
+}
+void file::display(void)
+{
+	fstream fptr;
+	employee E;
+	if(count!=0)
+	{
+		int cnt=1;
+		fptr.open("Employee.bin", ios::in);
+		cout<<"Following are the records::\n";
+		cout<<"================================\n";
+		cout<<"|  NAME  | ID | SALARY | CHAIN |\n";
+		cout<<"================================\n";
+		while(fptr.read((char*)&E,sizeof(E)))
+			E.disp();
+		cout<<"================================\n";
+		fptr.close();
+	}
+	else
+		cout<<"No records!\n";
+}
+void file::modify(void)
+{
+	fstream fptr;
+	employee E;
+	int key,index,choice;
+	do
+	{
+		cout<<"Enter ID to modify:";
+		cin>>key;
+		if(key<0)
+			cout<<"Enter Positive ID!\n";
+	}while(key<0);
+	index=search(key);
+	if(index==-1)
+		return;
+	fptr.open("Employee.bin", ios::in | ios::out);
+	fptr.seekp(index*sizeof(E));
+	fptr.seekg(index*sizeof(E));
+	fptr.read((char*)&E,sizeof(E));
+	do
+	{
+		cout<<"-------------------MODIFY MENU-----------------------\n";
+		cout<<"1:Name\n2:Salary\n3:Exit\nEnter choice:";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:E.updateName();
+				break;
+			case 2:E.updateSalary();
+				break;
+			case 3:cout<<"Record is modified!\n";
+				break;
+			default:cout<<"Wrong choice!\n";
+		}
+	}while(choice!=3);
+	fptr.seekp(index*sizeof(E));
+	fptr.seekg(index*sizeof(E));
+	fptr.write((char*)&E,sizeof(E));
+	fptr.close();
+}
+int file::search(int key)
+{
+	fstream fptr;
+	int index=hash(key);
+	employee E;
+	fptr.open("Employee.bin", ios::in);
+	fptr.seekg(index*sizeof(E));
+	fptr.read((char*)&E,sizeof(E));
+	if(E.getID()!=key)
+	{
+		while(E.get_chain()!=-1 && E.getID()!=key)
+		{
+			index=E.get_chain();
+			fptr.seekg(index*sizeof(E));
+			fptr.read((char*)&E,sizeof(E));
+		}
+	}
+	if(E.getID()==key)
+	{
+		cout<<"Record Found!\n";
+		cout<<"================================\n";
+		cout<<"|  NAME  | ID | SALARY | CHAIN |\n";
+		cout<<"================================\n";
+		E.disp();
+		cout<<"================================\n";
+		fptr.close();
+		return index;
+	}
+	else
+	{
+		cout<<"Record not found!\n"<<endl;
+		fptr.close();
+		return -1;
+	}
+}
+int main()
+{
+	int choice,key;
+	file data;
+	do
+	{
+		cout<<"----------------------EMPLOYEE FILE----------------------------\n";
+		cout<<"MENU::\n1.Insert a record\n2.Display all records\n3.Search for a ";
+		cout<<"record\n4.Modify a record\n5.Exit\nEnter Choice:";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1:data.insert();
+				break;			
+			case 2:data.display();
+				break;
+			case 3:do
+				{
+					cout<<"Enter ID to search:";
+					cin>>key;
+					if(key<0)
+						cout<<"Enter positive ID!\n";
+				}while(key<0);
+				data.search(key);
+				break;
+			case 4:data.modify();
+				break;
+			case 5:cout<<"Thank You!\n";
+				break;
+			default:cout<<"Wrong choice!"<<endl;
+				break;
+		}
+	}while(choice!=5);
+	return 0;
+}
