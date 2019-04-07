@@ -459,6 +459,6 @@ int main()
 			default:	cout<<"Invalid choice!!";
 		}
 	}
-	while(choice!=9);
+	while(choice!=7);
 	return 0;
 }
