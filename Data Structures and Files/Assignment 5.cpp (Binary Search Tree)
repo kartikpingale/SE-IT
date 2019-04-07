@@ -1,13 +1,13 @@
 #include<iostream>
-#include "queue.h"
 using namespace std;
-class tree_Node
+
+class treeNode
 {
-public:
+	public:
 	int data;
-	tree_Node *left,*right;
-public:
-	tree_Node()
+	treeNode *left,*right;
+	public:
+	treeNode()
 	{
 		left=NULL;
 		right=NULL;
@@ -15,12 +15,12 @@ public:
 };
 class tree
 {
-	tree_Node *root;
-	void destroy(tree_Node*);
-	void pre_disp(tree_Node*);
-	void in_disp(tree_Node*);
-	void post_disp(tree_Node*);
-	tree_Node* copy(tree_Node*);
+	treeNode *root;
+	void destroy(treeNode*);
+	void pre_disp(treeNode*);
+	void in_disp(treeNode*);
+	void post_disp(treeNode*);
+	treeNode* copy(treeNode*);
 public:
 	void insert(int);
 	void create(void);
@@ -31,8 +31,6 @@ public:
 	void BFT();
 	void mirror(tree);
 	void del(int);
-	int smallest(void);
-	int largest(void);
 	int is_empty();
 	void destroy();
 	tree()
@@ -44,7 +42,102 @@ public:
 		destroy(root);
 	}
 };
-void tree::destroy(tree_Node *rt)
+template<class my>
+class Node
+{
+	public:
+	my data;
+	Node<my>* next;
+	public:
+	Node()
+	{
+		next=NULL;
+	}
+};
+template<class my>
+class queue
+{
+	Node<my> *front,*rear;
+	void destroy();
+	public:
+	queue()
+	{
+		front=NULL;
+		rear=NULL;
+	}
+	my* remove();
+	void insert(my);
+	int is_empty();
+	Node<my>* get_top();
+	~queue()
+	{
+		destroy();
+	}
+};
+template<class my>
+int queue<my>::is_empty()
+{
+	if(front==NULL)
+		return 1;
+	else
+		return 0;
+}
+template<class my>
+void queue<my>::insert(my data)
+{
+	Node<my>* temp;
+	temp=new Node<my>;
+	temp->data=data;
+	if(rear==NULL)
+	{
+		rear=temp;
+		front=temp;
+	}
+	else
+	{
+		rear->next=temp;
+		rear=temp;
+	}
+}
+template<class my>
+Node<my>* queue<my>::get_top()
+{
+	if(front==NULL)
+		return NULL;
+	else
+		return front;
+}
+template<class my>
+my* queue<my>::remove()
+{
+	int ch;
+	my* ret;
+	Node<my> *temp;
+	if(front==NULL)
+		return NULL;
+	else
+	{
+		ret=new my;
+		*ret=front->data;
+		temp=front;
+		front=front->next;
+		delete temp;
+		if(front==NULL)
+			rear=NULL;
+		return ret;
+	}
+}
+template<class my>
+void queue<my>::destroy()
+{
+	my* temp;
+	while(!is_empty())
+	{
+		temp=remove();
+		delete temp;
+	}
+}
+void tree::destroy(treeNode *rt)
 {
 	if(rt!=NULL)
 	{
@@ -58,37 +151,37 @@ void tree::destroy()
 	destroy(root);
 	root=NULL;
 }
-void tree::pre_disp(tree_Node *root)
+void tree::pre_disp(treeNode *root)
 {
 	if(root != NULL)
 	{
-		cout<<root -> data<<",";
+		cout<<root -> data<<"\t";
 		pre_disp(root -> left);
 		pre_disp(root ->right);
 	}
 }
-void tree::in_disp(tree_Node *root)
+void tree::in_disp(treeNode *root)
 {
 	if(root != NULL)
 	{
 		in_disp(root -> left);
-		cout<<root -> data<<",";
+		cout<<root -> data<<"\t";
 		in_disp(root ->right);
 	}
 }
-void tree::post_disp(tree_Node *root)
+void tree::post_disp(treeNode *root)
 {
 	if(root != NULL)
 	{
 		post_disp(root -> left);
 		post_disp(root ->right);
-		cout<<root -> data<<",";
+		cout<<root -> data<<"\t";
 	}
 }
 void tree::insert(int new_data)
 {
-	tree_Node *temp,*pwalk,*parent;
-	temp=new tree_Node;
+	treeNode *temp,*pwalk,*parent;
+	temp=new treeNode;
 	temp->data=new_data;
 	if(root==NULL)
 		root=temp;
@@ -144,7 +237,7 @@ void tree::post_disp()
 }
 int tree::search(int key)
 {
-	tree_Node *pwalk;
+	treeNode *pwalk;
 	pwalk=root;
 	while(pwalk!=NULL)
 	{
@@ -159,8 +252,8 @@ int tree::search(int key)
 }
 void tree::BFT()
 {
-	tree_Node *dis;
-	queue<tree_Node>Q;
+	treeNode *dis;
+	queue<treeNode>Q;
 	if(root!=NULL)
 		Q.insert(*root);
 	while(!Q.is_empty())
@@ -173,9 +266,9 @@ void tree::BFT()
 			Q.insert(*dis->right);
 	}
 }
-tree_Node* tree::copy(tree_Node* rt)
+treeNode* tree::copy(treeNode* rt)
 {
-	tree_Node* tr=new tree_Node;
+	treeNode* tr=new treeNode;
 	tr->data=rt->data;
 	if(rt->left!=NULL)
 		tr->left=copy(rt->left);
@@ -185,8 +278,8 @@ tree_Node* tree::copy(tree_Node* rt)
 }
 void tree::mirror(tree tr)
 {
-	tree_Node *dis,*temp;
-	queue<tree_Node*>Q;
+	treeNode *dis,*temp;
+	queue<treeNode*>Q;
 	root=copy(tr.root);
 	if(root!=NULL)
 		Q.insert(root);
@@ -206,7 +299,7 @@ void tree::mirror(tree tr)
 void tree::del(int key)
 {
 	int flag=0,data;
-	tree_Node *pwalk,*parent,*p,*pre;
+	treeNode *pwalk,*parent,*p,*pre;
 	pwalk=root;
 	while(parent!=NULL && flag==0)
 	{
@@ -310,26 +403,6 @@ void tree::del(int key)
 	}
 	cout<<"Data has been deleted!!";
 }
-int tree::smallest()
-{
-	tree_Node* small;
-	small=root;
-	while(small->left!=NULL)
-	{
-		small=small->left;
-	}
-	return small->data;
-}
-int tree::largest()
-{
-	tree_Node* large;
-	large=root;
-	while(large->right!=NULL)
-	{
-		large=large->right;
-	}
-	return large->data;
-}
 int tree::is_empty()
 {
 	if(root==NULL)
@@ -338,66 +411,54 @@ int tree::is_empty()
 }
 int main()
 {
-	int choice,data,res;
-	tree T,M;
+	int choice, data, res;
+	tree T, M;
+	T.create();
 	do
 	{
-		while(T.is_empty())
-		{
-			cout<<"\nYou need to create tree first!!\n";
-			T.create();
-		}
-		cout<<"\n-----------------------BINARY SEARCH TREE----------------------------\n";
-		cout<<"What do you wish to do?\n1:Insert\n2:Search\n3:Delete\n4:Display\n5:BFT\n";
-		cout<<"6:Mirror Image\n7:Smallest element\n8:Largest element\n9:Exit\nEnter choice:";
+		cout<<"\n1. Insert\n2. Search\n3. Delete\n4. Display\n5. BFT\n6. Mirror Image\n7. Exit\nEnter choice: ";
 		cin>>choice;
 		switch(choice)
 		{
-			case 1:cout<<"Enter data to be inserted:";
-				cin>>data;
-				T.insert(data);
-				break;
-			case 2:cout<<"Enter data to be searched:";
-				cin>>data;
-				res=T.search(data);
-				if(res==0)
-					cout<<data<<" is not in the tree!!";
-				else
-					cout<<data<<" is found in the tree!!";
-				break;
-			case 3:cout<<"Enter data to be deleted:";
-				cin>>data;
-				T.del(data);
-				break;
-			case 4:cout<<"Preorder traversal:\n\t";
-				T.pre_disp();
-				cout<<"\nInorder traversal:\n\t";
-				T.in_disp();
-				cout<<"\nPostorder traversal:\n\t";
-				T.post_disp();
-				break;
-			case 5:cout<<"Breadth First Traversal of the tree is:\n\t";
-				T.BFT();
-				break;
-			case 6:M.destroy();
-				M.mirror(T);
-				cout<<"Preorder traversal of mirror image:\n\t";
-				M.pre_disp();
-				cout<<"\nInorder traversal of mirror image:\n\t";
-				M.in_disp();
-				cout<<"\nPostorder traversal of mirror image:\n\t";
-				M.post_disp();
-				break;
-			case 7:res=T.smallest();
-				cout<<"Smallest element is:"<<res;
-				break;
-			case 8:res=T.largest();
-				cout<<"Largest element is:"<<res;
-				break;
-			case 9:cout<<"Thank You!!\n";
-				break;
-			default:cout<<"Wrong choice!!";
+			case 1:	cout<<"Enter data to be inserted: ";
+					cin>>data;
+					T.insert(data);
+					break;
+			case 2:	cout<<"Enter data to be searched: ";
+					cin>>data;
+					res=T.search(data);
+					if(res==0)
+						cout<<data<<" is not in the tree!!";
+					else
+						cout<<data<<" is found in the tree!!";
+					break;
+			case 3:	cout<<"Enter data to be deleted: ";
+					cin>>data;
+					T.del(data);
+					break;
+			case 4:	cout<<"Preorder traversal:\n\t";
+					T.pre_disp();
+					cout<<"\nInorder traversal:\n\t";
+					T.in_disp();
+					cout<<"\nPostorder traversal:\n\t";
+					T.post_disp();
+					break;
+			case 5:	cout<<"Breadth First Traversal of the tree is:\n\t";
+					T.BFT();
+					break;
+			case 6:	M.destroy();
+					M.mirror(T);
+					cout<<"Preorder traversal of mirror image:\n\t";
+					M.pre_disp();
+					cout<<"\nInorder traversal of mirror image:\n\t";
+					M.in_disp();
+					cout<<"\nPostorder traversal of mirror image:\n\t";
+					M.post_disp();
+					break;
+			case 7:	break;
+			default:	cout<<"Invalid choice!!";
 		}
-	}while(choice!=9);
+	}
+	while(choice!=9);
 	return 0;
 }
