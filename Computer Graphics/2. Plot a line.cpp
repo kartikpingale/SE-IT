@@ -22,7 +22,7 @@ void myDisplay()
 	glClear(GL_COLOR_BUFFER_BIT);
 		glBegin(GL_LINES);
 			glVertex2i(100,100);
-      glVertex2i(300,300);
+    		 	glVertex2i(300,300);
 		glEnd();
 	glFlush();
 }
