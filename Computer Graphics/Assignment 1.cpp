@@ -22,14 +22,14 @@ void myDisplay()
 	glClear(GL_COLOR_BUFFER_BIT);
 		glBegin(GL_QUADS);
 			glVertex2i(100,100);
-      glVertex2i(200,100);
-      glVertex2i(200,200);
-      glVertex2i(100,200);
+      			glVertex2i(200,100);
+      			glVertex2i(200,200);
+      			glVertex2i(100,200);
 		glEnd();
-    glBegin(GL_LINE_LOOP);
+    		glBegin(GL_LINE_LOOP);
 			glVertex2i(100,200);
-      glVertex2i(150,250);
-      glVertex2i(200,200);
+      			glVertex2i(150,250);
+      			glVertex2i(200,200);
 		glEnd();
 	glFlush();
 }
