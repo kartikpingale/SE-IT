@@ -1,190 +1,196 @@
 /*
-Implement priority queue as ADT using single linked list for servicing patients in an hospital with priorities as i) Serious (top priority) ii) medium illness (medium priority) iii) General (Least priority).
+// ASSIGNMENT 2
+//
+// PROBLEM STATEMENT: Implement priority queue as ADT using single linked list for servicing patients in an hospital with priorities as
+// i) Serious (top priority)
+// ii) medium illness (medium priority)
+// iii) General (Least priority).
+//
+// AUTHOR: Kartik Pingale
 */
 
-#include<iostream>
+#include <iostream>
 
 using namespace std;
 
-class node
+class node /*class to store patient information*/
 {
-	public:
-	char name[30];
-	int priority;
-	node *next;
+    public:
+        char name[30];
+        int priority;
+        node *next;
+        node();
 };
 
-class queue
+class priorityQueue /*class to create a priority queue*/
 {
-	public:
-	node *front, *rear;
-	queue();
-	void enqueue();
-	void dequeue();
-	void display();
+        node *front, *rear;
+    public:
+        priorityQueue();
+        void enqueue();
+        void dequeue();
+        void display();
 };
 
 int main()
 {
-	queue patients;
-	int choice;
-	do
-	{
-		cout << "\n1. Enter patient data\n2. Remove patient data\n3. Display priority queue\n4. Exit\nEnter your choice: ";
-		cin >> choice;
-		switch(choice)
-		{
-			case 1:
-			{
-				patients.enqueue();
-				break;
-			}
-			case 2:
-			{
-				patients.dequeue();
-				break;
-			}
-			case 3:
-			{
-				patients.display();
-				break;
-			}
-			case 4:	break;
-			default:
-			{
-				cout << "\nInvalid Input!\n";
-				break;
-			}
-		}
-	}
-	while(choice!=4);
-	return 0;
+    priorityQueue patient;
+    int choice;
+
+    do
+    {
+        cout << "\n1. Admit Patient\n2. Release Patient\n3. Display Patient Queue\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+
+        switch(choice)
+        {
+            case 1:
+                {
+                    patient.enqueue();
+                    break;
+                }
+            case 2:
+                {
+                    patient.dequeue();
+                    break;
+                }
+            case 3:
+                {
+                    patient.display();
+                    break;
+                }
+            case 4: break;
+            default:
+                {
+                    cout << "\nInvalid Input!\n";
+                    break;
+                }
+        }
+    }
+    while(choice!=4);
+
+    return 0;
+}
+void priorityQueue::display() /*function to display patients' queue*/
+{
+    if(front==NULL) /*check for empty queue*/
+    {
+        cout << "\nEmpty Queue!\n";
+    }
+    else /*display patient data priority-wise*/
+    {
+        int sr=1;
+        node *temp=front;
+        cout << "\n-------------------------------------";
+        cout << "\nSr\tName\t\tPriority";
+        cout << "\n-------------------------------------";
+        while(temp!=NULL)
+        {
+            cout << "\n" << sr << "\t" << temp->name << "\t\t";
+            if(temp->priority==1)
+            {
+                cout << "Serious\n";
+            }
+            else if(temp->priority==2)
+            {
+                cout << "Moderate\n";
+            }
+            else
+            {
+                cout << "General\n";
+            }
+            sr++;
+            temp=temp->next;
+        }
+    }
 }
 
-queue::queue()
+void priorityQueue::dequeue() /*function to release a patient (remove from queue)*/
 {
-	front=NULL;
-	rear=NULL;
+    if(front==NULL) /*check for empty queue*/
+    {
+        cout << "\nEmpty Queue!\n";
+    }
+    else
+    {
+        cout << "\nPatient released!\n";
+        cout << "\nName: " << front->name << endl;
+        cout << "Illess: ";
+        switch(front->priority)
+        {
+            case 1:
+                {
+                    cout << "Serious\n";
+                    break;
+                }
+            case 2:
+                {
+                    cout << "Moderate\n";
+                    break;
+                }
+            case 3:
+                {
+                    cout << "General\n";
+                    break;
+                }
+        }
+
+        node *temp=front; /*delete node and set front to the next node*/
+        front=front->next;
+        delete temp;
+    }
 }
 
-void queue::enqueue()
+void priorityQueue::enqueue() /*function to admit a patient (add to queue)*/
 {
-	int illness, error=0;
-	node *patient=new node;
-	cout << "\nEnter patient's name: ";
-	cin.ignore();
-	cin.getline(patient->name, 30);
-	do
-	{
-		cout << "\n1. Serious\n2. Medium\n3. General\nSelect the illness: ";
-		cin >> illness;
-		switch(illness)
-		{
-			case 1:
-			{
-				patient->priority=3;
-				break;
-			}
-			case 2:
-			{
-				patient->priority=2;
-				break;
-			}
-			case 3:
-			{
-				patient->priority=1;
-				break;
-			}
-			default:
-			{
-				cout << "\nInvalid Input!\n";
-				error=1;
-				break;
-			}
-		}
-	}
-	while(error==1);
-	
-	if(rear==NULL)
-	{
-		patient->next=NULL;
-		front=patient;
-		rear=patient;
-	}
-	else if(patient->priority > front->priority)
-	{
-		patient->next=front;
-		front=patient;
-	}
-	else
-	{
-		node *prev, *temp=front;
-		while((patient->priority <= temp->priority) && temp->next!=NULL)
-		{
-			prev=temp;
-			temp=temp->next;
-		}
-		if(temp->next==NULL && temp->priority>=patient->priority)
-		{
-			temp->next=patient;
-			patient->next=NULL;
-			return;
-		}
-		prev->next=patient;
-		patient->next=temp;
-	}
+    node *patient=new node;
+    cout << "\nEnter patient's name: ";
+    cin.ignore();
+    cin.getline(patient->name, 30);
+    cout << "\n1. Serious\n2. Moderate\n3. General\nSelect the illness: ";
+    cin >> patient->priority;
+
+    if(rear==NULL) /*check if queue is empty*/
+    {
+        patient->next=NULL;
+        front=rear=patient;
+    }
+    else if(patient->priority < front->priority) /*check if node should be added at the front*/
+    {
+        patient->next=front;
+        front=patient;
+    }
+    else /*insert node at appropriate position*/
+    {
+        node *temp=front, *prev;
+        while((temp->priority <= patient->priority) && temp->next!=NULL) /*find position*/
+        {
+            prev=temp;
+            temp=temp->next;
+        }
+        if(temp->next==NULL && (temp->priority <= patient->priority)) /*if patient is the last element in the queue*/
+        {
+            temp->next=patient;
+            patient->next=NULL;
+            rear=patient;
+        }
+        else
+        {
+            patient->next=temp;
+            prev->next=patient;
+        }
+    }
+    cout << "\nPatient enqueued!\n";
 }
 
-void queue::dequeue()
+priorityQueue::priorityQueue() /*constructor for priority queue*/
 {
-	if(front==NULL)
-	{
-		cout << "\nEmpty Queue!\n";
-	}
-	else
-	{
-		cout << "\nPatient served!\nName: " << front->name << endl;
-		if(front->priority==1)
-		{
-			cout << "Illness: General\n";
-		}
-		else if(front->priority==2)
-		{
-			cout << "Illness: Medium\n";
-		}
-		else
-		{
-			cout << "Illness: Serious\n";
-		}
-		node *temp=front;
-		front=front->next;
-		delete temp;
-	}
+    front=rear=NULL;
 }
 
-void queue::display()
+node::node() /*constructor for node*/
 {
-	if(front==NULL)
-	{
-		cout << "\nEmpty Queue!\n";
-	}
-	else
-	{
-		cout << "\nPatient Priority Queue:\n\nSr. No.\t\tName\t\t\tIllness\n";
-		cout << "-------------------------------------\n";
-		int i=1;
-		node *temp=front;
-		while(temp!=NULL)
-		{
-			cout << i << "\t\t" << temp->name << "\t\t";
-			if(temp->priority==3)
-				cout << "Serious\n";
-			else if(temp->priority==2)
-				cout << "Medium\n";
-			else
-				cout << "General\n";
-			i++;
-			temp=temp->next;
-		}
-	}
+    name[0]='\0';
+    priority=-1;
+    next=NULL;
 }
