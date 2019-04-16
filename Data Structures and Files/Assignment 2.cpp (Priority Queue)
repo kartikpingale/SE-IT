@@ -71,6 +71,7 @@ int main()
 
     return 0;
 }
+
 void priorityQueue::display() /*function to display patients' queue*/
 {
     if(front==NULL) /*check for empty queue*/
