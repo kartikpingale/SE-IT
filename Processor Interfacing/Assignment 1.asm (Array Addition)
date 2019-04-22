@@ -8,7 +8,8 @@ endm
 
 .data
 
-        arrNos dw 0001h, 0002h, 0003h
+        arrNos dw 0001h, 0002h, 0003h		; array
+	
 	addMsg db 10, 13, "*****ARRAY ADDITION*****$"
 	resultMsg db 10, 13, "Result of addition is $"
 
