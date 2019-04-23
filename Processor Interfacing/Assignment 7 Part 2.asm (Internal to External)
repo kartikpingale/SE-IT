@@ -4,14 +4,14 @@
 ; AUTHOR - Kartik Pingale
 
 mov R0, #40h		; memory location where data will be stored
-mov DPTR, #9000h		; memory location where data will be transferred
+mov DPTR, #9000h	; memory location where data will be transferred
 mov R2, #05h		; counter
 
 myLoop:
 mov A, @R0		; move data from location pointed by R0 to accumulator
 mov @DPTR, A		; move data from accumulator to location pointed by R1
 inc R0			; increment R0
-inc DPTR			; increment R1
+inc DPTR		; increment R1
 djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
 
 lcall 0055		; terminate the program
