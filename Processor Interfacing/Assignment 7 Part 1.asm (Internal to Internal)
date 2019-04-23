@@ -6,13 +6,13 @@
 mov R0, #40h		; memory location where data will be stored
 mov R1, #50h		; memory location where data will be transferred
 mov R2, #05h		; counter
-clr A				; initialize accumulator
+clr A			; initialize accumulator
 
 myLoop:
-mov A, @R0			; move data from location pointed by R0 to accumulator
-mov @R1, A			; move data from accumulator to location pointed by R1
-inc R0				; increment R0
-inc R1				; increment R1
+mov A, @R0		; move data from location pointed by R0 to accumulator
+mov @R1, A		; move data from accumulator to location pointed by R1
+inc R0			; increment R0
+inc R1			; increment R1
 djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
 
-lcall 0055			; terminate the program
+lcall 0055		; terminate the program
