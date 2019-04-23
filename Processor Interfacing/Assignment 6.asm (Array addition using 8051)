@@ -13,6 +13,6 @@ noCarry:
 inc R0				; increment address
 djnz R2, addLoop		; decrement counter and jump to 'addLoop' if counter is not equal to zero
 
-mov R6, A				; move result in register 6
+mov R6, A			; move result in register 6
 
-lcall 0055				; terminate the program
+lcall 0055			; terminate the program
