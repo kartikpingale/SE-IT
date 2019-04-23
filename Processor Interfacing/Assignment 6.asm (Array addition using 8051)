@@ -1,1 +1,18 @@
+mov R0, #40h		; starting address of array
+mov R2, #05h		; counter
+mov R7, #00h		; initialize register to store carry
 
+clr A				; initialize accumulator to 0
+
+addLoop:
+add A, @R0			; add content at address of R0 with accumulator
+jnc noCarry			; jump if no carry
+inc R7				; increment register 7 if carry is generated
+
+noCarry:
+inc R0				; increment address
+djnz R2, addLoop	; decrement counter and jump to 'addLoop' if counter is not equal to zero
+
+mov R6, A			; move result in register 6
+
+lcall 0055			; terminate the program
