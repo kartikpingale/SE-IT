@@ -6,6 +6,7 @@
 mov R0, #40h		; memory location where data will be transferred
 mov DPTR, #9000h	; memory location where data will be stored
 mov R2, #05h		; counter
+clr A   ; initialize accumulator
 
 myLoop:
 movx A, @DPTR		; move data from location pointed by R0 to accumulator
