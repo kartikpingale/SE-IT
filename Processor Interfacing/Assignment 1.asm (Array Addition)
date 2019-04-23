@@ -1,3 +1,8 @@
+; PROBLEM STATEMENT
+; Write ALP to add array of N numbers stored in the memory
+;
+; AUTHOR - Kartik Pingale
+
 disp macro msg		; macro to display message
 	lea dx, msg
 	mov ah, 09h
