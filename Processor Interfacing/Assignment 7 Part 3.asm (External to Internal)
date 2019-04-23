@@ -1,1 +1,17 @@
+; PROBLEM STATEMENT
+; Write 8051 ALP for block transfer from external to external memory
+;
+; AUTHOR - Kartik Pingale
 
+mov R0, #40h		; memory location where data will be transferred
+mov DPTR, #9000h	; memory location where data will be stored
+mov R2, #05h		; counter
+
+myLoop:
+movx A, @DPTR		; move data from location pointed by R0 to accumulator
+mov @R0, A		; move data from accumulator to location pointed by DPTR
+inc R0			; increment R0
+inc DPTR		; increment DPTR
+djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
+
+lcall 0055		; terminate the program
