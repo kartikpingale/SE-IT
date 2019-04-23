@@ -1,5 +1,5 @@
 ; PROBLEM STATEMENT
-; Write 8051 ALP for block transfer from external to external memory
+; Write 8051 ALP for block transfer from external to internal memory
 ;
 ; AUTHOR - Kartik Pingale
 
