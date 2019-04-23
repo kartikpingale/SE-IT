@@ -9,9 +9,9 @@ mov R2, #05h		; counter
 
 myLoop:
 mov A, @R0		; move data from location pointed by R0 to accumulator
-mov @DPTR, A		; move data from accumulator to location pointed by R1
+mov @DPTR, A		; move data from accumulator to location pointed by DPTR
 inc R0			; increment R0
-inc DPTR		; increment R1
+inc DPTR		; increment DPTR
 djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
 
 lcall 0055		; terminate the program
