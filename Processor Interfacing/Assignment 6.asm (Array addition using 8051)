@@ -1,3 +1,8 @@
+; PROBLEM STATEMENT
+; Write 8051 ALP to add n 8 bits numbers found in internal RAM location 40H onwards and store results in R6 and R7
+;
+; AUTHOR - Kartik Pingale
+
 mov R0, #40h			; starting address of array
 mov R2, #05h			; counter
 mov R7, #00h			; initialize register to store carry
