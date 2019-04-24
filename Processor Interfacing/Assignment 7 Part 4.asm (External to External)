@@ -12,13 +12,13 @@ clr A       		; initialize accumulator
 
 myLoop:
 movx A, @DPTR		; move data from source to accumulator
-push DPH			; push DPH on stack
-push DPL			; push DPL on stack
-mov DPH, R0			; get upper byte of destination address
-mov DPL, R1			; get lower byte of destination address
+push DPH		; push DPH on stack
+push DPL		; push DPL on stack
+mov DPH, R0		; get upper byte of destination address
+mov DPL, R1		; get lower byte of destination address
 movx @DPTR, A		; move data from accumulator to destination
-pop DPL				; pop DPL from stack
-pop DPH				; pop DPH from stack
+pop DPL			; pop DPL from stack
+pop DPH			; pop DPH from stack
 inc R1			; increment lower byte of destination address
 inc DPTR		; increment source address
 djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
