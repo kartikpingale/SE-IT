@@ -1,1 +1,331 @@
+; PROBLEM STATEMENT
+; Write menu driven ALP to perform string manipulations. The strings to be accepted from the user is to be
+; stored in code segment Module_1 and write FAR PROCEDURES in code segment Module_2 to
+; perform any two of the following string operations:
+;   i. Concatenation of two strings.
+;   ii. Comparison of two strings.
+;   iii. Finding Number of occurrences of a sub-string in the given string
+;   iv. Finding number of alphabets, digits, special characters, lower & upper case alphabets, words
+; Note: Use PUBLIC and EXTERN directives. Create .OBJ files of both the modules and link them to create an .EXE file
+;
+; AUTHOR - Kartik Pingale
 
+disp macro msg           ;Macro to display string
+     lea dx,msg          ;Load eff. add.
+     mov ah,09h          ;Interrupt to display string
+     int 21h             ;Interrupt has occurred
+endm                     ;End of macro
+
+public concat
+public comp
+public substring
+public occurence
+
+.model small             ;Small memory model
+
+.data                    ;Data segment
+
+extrn str1 : byte
+extrn str2 : byte
+extrn str3 : byte
+extrn msg9 : byte
+extrn msg11 : byte
+extrn msg12 : byte
+extrn msg16 : byte
+extrn msg17 : byte
+extrn msg18 : byte
+extrn msg19 : byte
+extrn msg20 : byte
+extrn msg21 : byte
+extrn count : word
+extrn cnt_al : word
+extrn cnt_sm : word 
+extrn cnt_cap : word
+extrn cnt_num : word
+extrn cnt_spl : word
+extrn cnt_wds : word
+
+.code
+
+ start:
+
+      concat proc far        ; Length Procedure
+
+         lea si,str1+1
+         mov bl,[si]
+         inc si
+
+         lea di,str3+2
+
+         mov cl,bl
+
+         cld
+
+         ;Copy first string str1 in str3
+         repe movsb 
+
+         lea si,str2+1
+         mov bl,[si]
+         inc si
+
+         mov cl,bl
+
+         cld
+
+         ;Copy second string str2 in str3
+         repe movsb
+
+         lea si,str1+1
+         add bx,[si]
+
+         lea si,str3+1
+         mov [si],bx
+
+           disp msg9       ;Display message
+           lea dx,str3+2   ;Load eff. add.
+           mov ah,09h      ;Interrupt to display a string
+           int 21h         ;Interrupt has occurred
+                      
+       ret
+       endp
+
+      comp proc far        ; Compare Procedure
+
+         lea si,str1+1
+         mov bl,[si]
+         inc si
+
+         lea di,str2+1
+         mov al,[di]
+         inc di
+
+         sub al,bl
+         jz cont
+
+         jmp invalid
+
+     cont :
+           mov cl,bl
+
+           cld
+
+           repe cmpsb
+           jnz  out2
+
+           out1 : disp msg9       ;Display message
+                  disp msg11
+                  jmp go
+
+
+       invalid :
+
+       out2    : disp msg9       ;Display message
+                 disp msg12
+
+       go      :
+
+   ret
+   endp
+
+    substring proc far        ; Substring Procedure
+
+         mov count,0000h
+
+         lea si,str1+1
+         mov cl,[si]
+         inc si
+
+         lea di,str2+1
+         mov ch,[di]
+         mov dl,[di]           ; Helps to reset ch
+         inc di
+
+     loop3 : mov bl,[si]
+             cmp bl,[di]
+               je loop4
+             inc si
+             dec cl
+               jnz loop3
+
+             jmp exit_now
+
+     loop4 :  dec ch
+                jz success
+              inc si
+              inc di
+              mov bl,[si]
+              cmp bl,[di]
+                je loop4
+              
+              lea di,str2+2
+              mov ch,dl
+              
+              jmp loop3
+
+    success : add count,01h
+              lea di,str2+2
+              mov ch,dl
+              dec cl
+              jmp loop3
+
+
+     exit_now:
+
+       disp msg9
+       mov dx,count
+       call output
+
+   ret
+   endp
+
+    occurence proc far		;Procedure to  count various occurrence 
+
+        mov cnt_al,0000h
+        mov cnt_sm,0000h 
+        mov cnt_cap,0000h
+        mov cnt_num,0000h
+        mov cnt_spl,0000h
+        mov cnt_wds,0000h
+
+         lea si,str1+1
+         mov cl,[si]
+         inc si
+
+         cmp cl,00h
+         je next_char
+
+         add cnt_wds,01h
+
+     next_char :
+
+         mov bl,20h
+         cmp [si],bl
+            je space
+
+         mov bl,21h
+         cmp [si],bl
+            jge spl1
+         back0 :
+
+         mov bl,30h
+         cmp [si],bl
+            jge num1
+         back1 :
+
+         mov bl,3Ah
+         cmp [si],bl
+            jge spl2
+         back2 :
+
+         mov bl,41h
+         cmp [si],bl
+            jge ca1
+         back3 :
+
+         mov bl,61h
+         cmp [si],bl
+            jge sm1
+         back4 :
+
+         jmp ok
+
+       space : add cnt_wds,01h
+               jmp ok
+
+       spl1  : mov bl,29h
+               cmp [si],bl
+                 jle spl
+               jmp back0
+
+       num1  : mov bl,39h
+               cmp [si],bl
+                jle number
+               jmp back1
+
+       spl2  : mov bl,40h
+               cmp [si],bl
+                 jle spl
+               jmp back2
+
+       ca1   : mov bl,5Ah
+               cmp [si],bl
+                jle capital
+               jmp back3
+
+       sm1   : mov bl,7Ah
+               cmp [si],bl
+                jle smll
+               jmp back4
+               
+       number  : add cnt_num,01h
+                 jmp ok
+
+       spl     : add cnt_spl,01h
+                 jmp ok
+
+       capital : add cnt_cap,01h
+                 jmp ok
+
+       smll   :  add cnt_sm,01h
+                
+       ok : inc si
+            dec cl
+              jnz next_char
+
+      disp msg16
+      mov bx,cnt_cap
+      add bx,cnt_sm
+      mov cnt_al,bx
+      mov dx,cnt_al         	;Total alphabets count 
+      call output
+
+      disp msg17
+      mov dx,cnt_cap
+      call output
+
+      disp msg18
+      mov dx,cnt_sm
+      call output
+
+      disp msg19
+      mov dx,cnt_spl
+      call output
+
+      disp msg20
+      mov dx,cnt_wds
+      call output
+
+      disp msg21
+      mov dx,cnt_num
+      call output
+
+
+    ret
+    endp
+
+    output proc near 		;Procedure to display output on screen
+
+            mov cl,04h
+
+            disp1 :  rol dx,04h
+                     push dx
+                     and dx,000fh
+                     cmp dx,09h
+                     jbe p1
+                     add dx,37h
+                     jmp p2
+
+            p1 :   add dx,30h
+
+            p2 :   mov ah,02h
+                  int 21h
+
+           pop dx
+           dec cl
+            jnz disp1
+
+       ret
+       endp
+
+
+  end start 
