@@ -1,1 +1,169 @@
+; PROBLEM STATEMENT
+; Write menu driven ALP to perform string manipulations. The strings to be accepted from the user is to be
+; stored in code segment Module_1 and write FAR PROCEDURES in code segment Module_2 to
+; perform any two of the following string operations:
+;   i. Concatenation of two strings.
+;   ii. Comparison of two strings.
+;   iii. Finding Number of occurrences of a sub-string in the given string
+;   iv. Finding number of alphabets, digits, special characters, lower & upper case alphabets, words
+; Note: Use PUBLIC and EXTERN directives. Create .OBJ files of both the modules and link them to create an .EXE file
+;
+; AUTHOR - Kartik Pingale
 
+disp macro msg           ;Macro to display string
+     lea dx,msg          ;Load eff. add.
+     mov ah,09h          ;Interrupt to display string
+     int 21h             ;Interrupt has occurred
+endm                     ;End of macro
+
+extrn concat : far            ;External procedure
+extrn comp   : far            ;External procedure
+extrn substring : far         ;External procedure
+extrn occurence   : far       ;External procedure
+
+public msg9                   ;Public Messages
+public msg11
+public msg12
+public msg16
+public msg17
+public msg18
+public msg19
+public msg20
+public msg21
+public str1                   ;Public data elements
+public str2
+public str3
+public count
+public cnt_al  
+public cnt_sm  
+public cnt_cap 
+public cnt_num 
+public cnt_spl 
+public cnt_wds
+
+.model small             ;Small memory model
+
+.data                    ;Data segment
+
+msg1 db 10,10,13,"********MENU********$"    ;Messages
+msg2 db 10,10,13,"1:Concatenate Strings$"     
+msg3 db 10,13,"2:Compare Two Strings$"        
+msg4 db 10,13,"3:Substring$"
+msg13 db 10,13,"4:Occurence Of Characters$"
+msg15 db 10,13,"5:Exit$"
+msg5 db 10,10,13,"Enter Choice :$"            
+msg6 db 10,13,"Wrong Choice!!$"
+msg7 db 10,13,"Enter String1 :$"              
+msg8 db 10,13,"Enter String2 :$"              
+msg9 db 10,13,"Concatenated string :$"                     
+msg10 db 10,13,"Invalid Input!$"              
+msg11 db 10,13,"Strings Are Equal !$"
+msg12 db 10,13,"Strings Are Unequal !$"
+msg16 db 10,13,"Alphabets : $"
+msg17 db 10,13,"Capital : $"
+msg18 db 10,13,"Small : $"
+msg19 db 10,13,"Special Symbols : $"
+msg20 db 10,13,"Words : $"
+msg21 db 10,13,"Numbers : $"
+
+str1 db 25,?,25 dup('$')     ;Array to store string1
+str2 db 25,?,25 dup('$')     ;Array to store string2
+str3 db 50,?,50 dup('$')     ;Array to store concatenated string
+
+count   dw 0000h    ;To count sub_string occurence
+
+cnt_al  dw 0000h    ;To count alphabets occurence
+cnt_sm  dw 0000h    ;To count small alphabets occurence
+cnt_cap dw 0000h    ;To count capital alphabets occurence
+cnt_num dw 0000h    ;To count numbers occurence
+cnt_spl dw 0000h    ;To count special symbols occurence
+cnt_wds dw 0000h    ;To count words occurence
+
+
+.stack             ;Empty stack segment
+
+.code              ;Code segment
+
+ start :           ;Starting label for code segment
+
+        mov ax,@data       ;Moving base add. of data segment
+        mov ds,ax          ;Moving base add. of data segment in ds reg.
+        mov es,ax          ;Moving base add. of data segment in es reg.
+
+        menu :
+               disp msg1   ;Display message
+               disp msg2   ;Display message
+               disp msg3
+               disp msg4   ;Display message
+               disp msg13
+               disp msg15   ;Display message
+               disp msg5
+
+        mov ah,01h         ;Interrupt to accept a character
+        int 21h            ;Interrupt has occurred
+
+        sub al,30h         ;Subtract
+
+        cmp al,05h         ;Compare
+            je l5          ;Jump if equal
+
+        cmp al,06h         ;Compare
+            jge l6         ;Jump if greater or equal
+
+               disp msg7            ;Display message
+               lea dx,str1          ;Accept str1
+               mov ah,0ah
+               int 21h
+
+        cmp al,01h         ;Compare
+            je l1          ;Jump if equal
+
+        cmp al,02h         ;Compare
+            je l2          ;Jump if equal
+
+        cmp al,03h         ;Compare
+            je l3          ;Jump if equal
+
+        cmp al,04h         ;Compare
+            je l4          ;Jump if equal
+
+      l6 :
+           disp msg6          ;Display message
+           jmp menu           ;Jump
+
+      l1 :
+           disp msg8            ;Display message
+           lea dx,str2
+           mov ah,0ah
+           int 21h
+           
+           call concat     ;Call procedure to count length
+           jmp menu
+
+      l2 : 
+           disp msg8            ;Display message
+           lea dx,str2
+           mov ah,0ah           ;Accept str2
+           int 21h
+           
+           call comp          ;Call procedure to count length
+           jmp menu
+
+      l3 : 
+           disp msg8            ;Display message
+           lea dx,str2
+           mov ah,0ah           ;Accept str2
+           int 21h
+           
+           call substring     ;Call procedure to count length
+           jmp menu
+
+      l4 : 
+           call occurence     ;Call procedure to count various occ. counts
+           jmp menu
+
+      l5 :
+           mov ah,4ch         ;Terminate Interrupt
+           int 21h
+
+  end start
