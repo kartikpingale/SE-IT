@@ -1,3 +1,13 @@
+; PROBLEM STATEMENT
+; Write ALP to perform following operations on string:
+;   i. Find and display length
+;   ii. Display reverse
+;   iii. Check whether string is palindrome or not.
+; Display proper strings to prompt the user while accepting the input and displaying the result.
+; Write near procedures to complete the task.
+;
+; AUTHOR - Kartik Pingale
+
 disp macro msg
         lea dx, msg
         mov ah, 09h
