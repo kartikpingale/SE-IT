@@ -3,7 +3,7 @@
 ;
 ; AUTHOR - Kartik Pingale
 
-mov SP, #90h    ; initialize stack pointer
+mov SP, #90h    	; initialize stack pointer
 mov DPTR, #9000h	; memory location where data will be stored
 mov R0, #95h		; upper byte of memory location where data will be transferred
 mov R1, #00h		; lower byte of memory location where data will be transferred
@@ -11,16 +11,16 @@ mov R2, #05h		; counter
 clr A       		; initialize accumulator
 
 myLoop:
-movx A, @DPTR		; move data from location pointed by R0 to accumulator
-push DPH
-push DPL
-mov DPH, R0
-mov DPL, R1
-movx @DPTR, A
-pop DPL
-pop DPH
-inc R1			; increment R1
-inc DPTR		; increment DPTR
+movx A, @DPTR		; move data from source to accumulator
+push DPH			; push DPH on stack
+push DPL			; push DPL on stack
+mov DPH, R0			; get upper byte of destination address
+mov DPL, R1			; get lower byte of destination address
+movx @DPTR, A		; move data from accumulator to destination
+pop DPL				; pop DPL from stack
+pop DPH				; pop DPH from stack
+inc R1			; increment lower byte of destination address
+inc DPTR		; increment source address
 djnz R2, myLoop		; decrement R2 and jump to 'myLoop' if not zero
 
 lcall 0055		; terminate the program
