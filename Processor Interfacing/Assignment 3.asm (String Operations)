@@ -8,7 +8,7 @@
 ;
 ; AUTHOR - Kartik Pingale
 
-disp macro msg
+disp macro msg				; macro to display a string
         lea dx, msg
         mov ah, 09h
         int 21h
@@ -35,7 +35,7 @@ endm
 .code
 start:
 
-        mov ax, @data
+        mov ax, @data	; get address of data segment
         mov ds, ax
         mov es, ax
 
@@ -103,16 +103,16 @@ start:
                 dec ch
                 jnz reversestr
 
-                lea si, str1+2
+                lea si, str1+2		; set pointers at the beginning of the string
 		lea di, str2
 
                 mov ch, 00h
 
-                cld
-                repe cmpsb
-                jnz isNotPalindrome
+                cld					; clear direction flag
+                repe cmpsb			; repeat compare string-byte and decrement cx
+                jnz isNotPalindrome	; strings are not palindromes if non-zero number is returned
 
-                disp palmsg
+                disp palmsg			; else, display palindrome message
                 jmp exitProc
 
                 isNotPalindrome:
