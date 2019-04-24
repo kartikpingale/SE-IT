@@ -1,3 +1,14 @@
+; PROBLEM STATEMENT
+; Write menu driven ALP to convert 4-digit Hex number into its equivalent BCD number
+; and 5-digit BCD number into its equivalent HEX number. Make your program user friendly to accept the choice for
+;   i. HEX to BCD
+;   ii. BCD to HEX
+;   iii. EXIT.
+; Display proper strings to prompt the user while accepting the input and displaying the result.
+; Write near procedures to complete the task.
+;
+; AUTHOR - Kartik Pingale
+
 disp macro msg		; macro to display messages
         lea dx, msg
         mov ah, 09h
