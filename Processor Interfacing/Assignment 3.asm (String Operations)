@@ -83,19 +83,19 @@ start:
 		
 	palindrome proc near
 		
-                lea di, str2        ; initialize variables
+                lea di, str2        		; initialize variables
                 lea si, str1+1
                 mov cl, [si]
                 mov ch, [si]
 
-                setptr1:            ; point si to last char
+                setptr1:            		; point si to last char
                 inc si
                 dec ch
                 jnz setptr1
 
                 mov ch, cl
 
-                reversestr:         ; reverse the string
+                reversestr:         		; reverse the string
                 mov bl, [si]
                 mov [di], bl
                 inc di
@@ -103,14 +103,14 @@ start:
                 dec ch
                 jnz reversestr
 
-                lea si, str1+2		; set pointers at the beginning of the string
+                lea si, str1+2			; set pointers at the beginning of the string
 		lea di, str2
 
                 mov ch, 00h
 
-                cld					; clear direction flag
+                cld				; clear direction flag
                 repe cmpsb			; repeat compare string-byte and decrement cx
-                jnz isNotPalindrome	; strings are not palindromes if non-zero number is returned
+                jnz isNotPalindrome		; strings are not palindromes if non-zero number is returned
 
                 disp palmsg			; else, display palindrome message
                 jmp exitProc
