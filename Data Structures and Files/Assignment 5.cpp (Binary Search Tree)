@@ -1,3 +1,17 @@
+/*
+// ASSIGNMENT 5
+//
+// PROBLEM STATEMENT: Implement binary search tree and perform following operations:
+//   a. Insert
+//   b. Delete
+//   c. Search
+//   d. Mirror image
+//   e. Display
+//   f. Display level wise
+//
+// AUTHOR: Kartik Pingale
+*/
+
 #include<iostream>
 using namespace std;
 
