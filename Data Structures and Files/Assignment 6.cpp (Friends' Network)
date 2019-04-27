@@ -1,8 +1,14 @@
 /*
-Consider a friends’ network on facebook social site. Model it as a graph to represent each node as a user and a link to represent the fried relationship between them. Store data such as date of birth, number of comments for each user.
-1. Find who is having maximum friends
-2. Find whose has post maximum and minimum comments
-3. Find users having birthday in this month
+// ASSIGNMENT 6
+//
+// PROBLEM STATEMENT: Consider a friends’ network on facebook social site. Model it as a graph to represent each node
+// as a user and a link to represent the fried relationship between them. Store data such as date of birth, number of
+// comments for each user.
+//   1. Find who is having maximum friends
+//   2. Find whose has post maximum and minimum comments
+//   3. Find users having birthday in this month
+//
+// AUTHOR: Kartik Pingale
 */
 
 #include<iostream>
