@@ -1,5 +1,13 @@
 /*
-Department maintains a student information. The file contains roll number, name, division and address. Write a program to create a sequential file to store and maintain student data. It should allow the user to add, delete information of student. Display information of particular employee. If record of student does not exist an appropriate message is displayed. If student record is found it should display the student details.
+// ASSIGNMENT 11
+//
+// PROBLEM STATEMENT
+// Department maintains a student information. The file contains roll number, name, division and address.
+// Write a program to create a sequential file to store and maintain student data. It should allow the user to add,
+// delete information of student. Display information of particular employee. If record of student does not exist an
+// appropriate message is displayed. If student record is found it should display the student details.
+//
+// AUTHOR - Kartik Pingale
 */
 
 #include<iostream>
