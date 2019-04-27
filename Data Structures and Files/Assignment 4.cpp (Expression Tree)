@@ -1,5 +1,10 @@
 /*
-Construct and expression tree from postfix/prefix expression and perform recursive and non- recursive In-order, pre-order and post-order traversals.
+// ASSIGNMENT 4
+//
+// PROBLEM STATEMENT: Construct and expression tree from postfix/prefix expression and perform recursive and
+// non-recursive in-order, pre-order and post-order traversals
+//
+// AUTHOR: Kartik Pingale
 */
 
 #include<iostream>
