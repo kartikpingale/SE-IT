@@ -1,3 +1,14 @@
+/*
+// ASSIGNMENT 10
+//
+// PROBLEM STATEMENT
+// A business house has several offices in different countries. They want to lease phone lines to connect them with each
+// other and the phone company charges different rent to connect different pairs of cities. Business house want to connect
+// all its offices with a minimum total cost. Solve the problem by suggesting appropriate data structures.
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include<iostream>
 #include<string.h>
 #define MAX 25
