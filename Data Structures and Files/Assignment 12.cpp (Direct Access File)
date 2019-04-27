@@ -1,3 +1,17 @@
+/*
+// ASSIGNMENT 12
+//
+// PROBLEM STATEMENT
+// Implement direct access file using hashing (chaining without replacement) perform following operations on it -
+//   a. Create Database
+//   b. Display Database
+//   c. Add a record
+//   d. Search a record
+//   e. Modify a record
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include<iostream>
 #include<fstream>
 #define MAX 11
