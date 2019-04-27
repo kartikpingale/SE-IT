@@ -1,3 +1,13 @@
+/*
+// ASSIGNMENT 9
+//
+// PROBLEM STATEMENT
+// Store data of students with telephone no and name in the structure using hashing function for telephone number
+// and implement chaining with and without replacement.
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include<iostream>
 #include<string.h>
 #define MAX 11
