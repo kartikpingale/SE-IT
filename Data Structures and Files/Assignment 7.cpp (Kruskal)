@@ -1,3 +1,12 @@
+/*
+// ASSIGNMENT 7
+//
+// PROBLEM STATEMENT
+// Represent any real world graph using adjacency list/adjacency matrix find minimum spanning tree using Kruskal’s algorithm
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include<iostream>
 #include "edges.h"
 using namespace std;
