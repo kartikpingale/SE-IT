@@ -1,3 +1,13 @@
+/*
+// ASSIGNMENT 8
+//
+// PROBLEM STATEMENT
+// Represent a given graph using adjacency matrix/adjacency list and find the shortest path using Dijkstra's algorithm
+// (single source all destination).
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include<iostream>
 using namespace std;
 class graph
