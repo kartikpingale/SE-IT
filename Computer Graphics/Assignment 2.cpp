@@ -2,7 +2,7 @@
 // ASSIGNMENT 2
 //
 // PROBLEM STATEMENT
-//
+// Draw polygon, choose colors by clicking on menu, use window port to draw. Use DDA algorithm.
 //
 // AUTHOR - Kartik Pingale
 */
