@@ -1,3 +1,12 @@
+/*
+// ASSIGNMENT 2
+//
+// PROBLEM STATEMENT
+//
+//
+// AUTHOR - Kartik Pingale
+*/
+
 #include <iostream>
 #include <GL/glut.h>
 
