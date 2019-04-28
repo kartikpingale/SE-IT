@@ -1,1 +1,83 @@
+; ASSIGNMENT 5
+;
+; PROBLEM STATEMENT
+; Write 8086 ALP to read command line arguments using Program Segment Prefix (PSP) and simulate “DOS COPY Command".
+; Use file handle function for handling the files. Handle all the errors and display appropriate message if user does
+; not enter proper command line argument.
+;
+; AUTHOR - Kartik Pingale
 
+print macro msg
+ lea dx,msg
+ mov ah,09h
+ int 21h
+endm
+
+.model small
+
+.data
+f1 db 15 dup(0)
+f2 db 15 dup(0)
+m1 db 10,13, "File Successfully Opened $"
+m2 db 10,13, "File Can't be Opened $"
+m3 db 10,13, "File Successfully Created $"
+m4 db 10,13, "File Can't Be Created $"
+
+.code
+start:
+      mov ax,@data
+      mov ds,ax
+      mov ah,62h
+      int 21h
+      mov es,bx
+      lea si,es:[80h]
+      mov cl,es:[si]
+      inc si
+      inc si
+      dec cl
+      lea di,f1
+	  
+   up:mov bl,es:[si]
+      cmp bl,20h
+      je l1
+      mov [di],bl
+      inc si
+      inc di
+      dec cl
+      jmp up
+	  
+   l1:mov bl,00h
+      mov [di],bl
+      lea di,f2
+	  
+   l2:inc si
+      mov bl,es:[si]
+      inc di
+      mov [di],bl
+      dec cl
+      jnz l2
+      mov bl,00h
+      mov [di],bl
+  lea dx,f1
+  mov al,02h
+  mov ah,3dh
+  int 21h
+  jc b1
+  print m1
+  jmp k1
+  
+b1:print m2
+k1:lea dx,f2
+  mov cx,0000h
+  mov ah,5bh
+  int 21h
+  jc b2
+  print m3
+  jmp k
+b2:print m4
+
+k:  
+mov ah,4ch
+int 21h
+
+end start
