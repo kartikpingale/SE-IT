@@ -2,7 +2,7 @@
 // ASSIGNMENT 9
 //
 // PROBLEM STATEMENT
-//
+// Generate fractal patterns using Koch curve
 //
 // AUTHOR - Kartik Pingale
 */
