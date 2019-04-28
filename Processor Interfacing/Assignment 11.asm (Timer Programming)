@@ -1,0 +1,28 @@
+; ASSIGNMENT 11
+;
+; PROBLEM STATEMENT
+; Write ALP to generate a square wave of 9 kHz in any port pin. Use timer with interrupt for delay generation
+;
+; AUTHOR - Kartik Pingale
+
+ORG 00H
+
+LJMP MAIN
+
+ORG 000BH
+
+CPL P1.2
+MOV TL0, #1AH
+MOV TH0, #0FFH
+RETI
+
+ORG 0030H
+
+MAIN:
+MOV TMOD, #01H
+MOV TH0, #0FFH
+MOV TL0, #1AH
+MOV IE, #82H
+SETB TR0
+
+HERE: SJMP, HERE
