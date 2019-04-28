@@ -2,7 +2,7 @@
 // ASSIGNMENT 1
 //
 // PROBLEM STATEMENT
-// Write a program to design a graphic image
+// Write a program to design a graphic image (house)
 //
 // AUTHOR - Kartik Pingale
 */
